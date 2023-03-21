@@ -133,15 +133,6 @@ def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C90
                     for gap in gaps:
                         relativ_time -= gap[1].total_seconds()
 
-                    T.append(relativ_time)
-                    ALERT.append(js["ids"] or excess > 0)
-                    if mark_fp:
-                        FALSE_ALERT.append(
-                            (js["ids"] and not js["malicious"])
-                            or (excess > 0 and FALSE_ALERT[-1])  # enlarge false alert
-                        )
-                    SCORES.append(get_score(js))
-
                     # enlarge attacks a tiny bit
                     excess -= 1
                     if ATTACK_START is None and js["ids"]:
@@ -151,6 +142,15 @@ def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C90
                             excess = MIN_WIDTH - (relativ_time - ATTACK_START)
                             settings.logger.info(f"Enlarging attack by {excess}")
                         ATTACK_START = None
+
+                    T.append(relativ_time)
+                    ALERT.append(js["ids"] or excess > 0)
+                    if mark_fp:
+                        FALSE_ALERT.append(
+                            (js["ids"] and not js["malicious"])
+                            or (excess > 0 and FALSE_ALERT[-1])  # enlarge false alert
+                        )
+                    SCORES.append(get_score(js))
 
                     line = f.readline()
 
