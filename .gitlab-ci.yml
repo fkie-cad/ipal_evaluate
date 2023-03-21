@@ -1,0 +1,45 @@
+default:
+  image: "ubuntu:22.04"
+
+before_script:
+  - apt-get update
+  - apt-get -y install software-properties-common sudo g++
+  - apt-get -y install pip vim git
+  - apt-get -y install libgsl-dev
+  - python3 --version
+  - pip3 install numpy
+  - pip3 install -r requirements.txt
+  - pip3 install -r requirements-dev.txt
+
+stages:
+  - Static Analysis
+  - Test
+
+black:
+  stage: Static Analysis
+  script:
+  - black --check --config pyproject.toml .
+
+flake8:
+  stage: Static Analysis
+  script:
+  - flake8
+
+isort:
+  stage: Static Analysis
+  script:
+  - isort --profile black --filter-files -c --skip ipal_transcriber --skip ipal_ids_framework --skip build .
+
+pytest:
+  stage: Test
+  script:
+    - python3 -m pytest -vv --cov=metrics --cov=evaluate --cov-report term --cov-report xml:coverage.xml --cov-branch
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    when: always
+    paths:
+      - tests/snapshots/output/*
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml

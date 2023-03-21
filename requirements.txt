@@ -1,0 +1,8 @@
+numpy
+scikit-learn
+opencv-python-headless
+https://github.com/saurf4ng/eTaPR/blob/main/eTaPR-22.6.1-py3-none-any.whl?raw=true
+pandas
+matplotlib
+git+https://github.com/ahstat/affiliation-metrics-py.git
+ray[tune]

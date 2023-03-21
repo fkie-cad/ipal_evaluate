@@ -1,0 +1,96 @@
+{
+    "tn": 0,
+    "fp": 4319,
+    "fn": 1459,
+    "tp": 0,
+    "Accuracy": 0.0,
+    "Precision": 0.0,
+    "Inverse-Precision": 0.0,
+    "Recall": 0.0,
+    "Inverse-Recall": 0.0,
+    "Fallout": 2.960246744345442,
+    "Missrate": 0.3378096781662422,
+    "Informedness": -1.0,
+    "Markedness": -1.0,
+    "F0.1": 0,
+    "F0.5": 0,
+    "F1": 0,
+    "F2": 0,
+    "F10": 0,
+    "MCC": -1.0,
+    "Jaccard-Index": 0.0,
+    "Jaccard-Distance": 1.0,
+    "Detected-Scenarios": [
+        "MITM"
+    ],
+    "Detected-Scenarios-Percent": 0.25,
+    "Scenario-Recall": {
+        "MITM": 0.0,
+        "physical fault": 0.0,
+        "DoS": 0.0,
+        "scan": 0.0
+    },
+    "Penalty-Score": 854668,
+    "Detection-Delay": 440.5315809249878,
+    "TPA": 1,
+    "FPA": 28,
+    "eTaR": 0.0,
+    "eTaP": 0.0,
+    "eTaF0.1": 0,
+    "eTaF0.5": 0,
+    "eTaF1": 0,
+    "eTaF2": 0,
+    "eTaF10": 0,
+    "BATADAL-TTD": 0.0,
+    "BATADAL-CLF": 0.0,
+    "BATADAL": 0.0,
+    "NAB-score-default": -422.5835780289814,
+    "NAB-score-low-fp": -846.1789373649523,
+    "NAB-score-low-fn": -281.06879058141243,
+    "Affiliation-Precision": 0.3896521621871943,
+    "Affiliation-Recall": 0.8896521621871942,
+    "Affiliation-F0.1": 0.39183252554762227,
+    "Affiliation-F0.5": 0.4389969472515355,
+    "Affiliation-F1": 0.5419428074868354,
+    "Affiliation-F2": 0.7079615191369794,
+    "Affiliation-F10": 0.8784910142731616,
+    "_evaluation-config": {
+###IGNORE-LINE###
+        "compresslevel": 9,
+        "input": "misc/tests/testfile-2.ipal.gz",
+        "output": "-",
+        "attacks": "misc/tests/attacks-2.json",
+        "timed_dataset": true,
+        "fscore_beta": [
+            0.1,
+            0.5,
+            1,
+            2,
+            10
+        ],
+        "eTaPR_theta_p": 0.5,
+        "eTaPR_theta_r": 0.01,
+        "eTaPR_delta": 0.0,
+        "batadal_gamma": 0.5,
+        "nab_profiles": {
+            "default": {
+                "nab_atp": 1,
+                "nab_afp": -0.11,
+                "nab_afn": -1
+            },
+            "reward_low_fp": {
+                "nab_atp": 1,
+                "nab_afp": -0.22,
+                "nab_afn": -1
+            },
+            "reward_low_fn": {
+                "nab_atp": 1,
+                "nab_afp": -0.11,
+                "nab_afn": -2.0
+            }
+        },
+        "log": 30,
+        "logformat": "%(levelname)s:%(name)s: %(message)s",
+        "logfile": "-"
+    }
+}
