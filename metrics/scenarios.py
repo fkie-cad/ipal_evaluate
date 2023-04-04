@@ -33,8 +33,8 @@ class DetectedScenarios(Metric):
                 for att in attacks:  # detected time range
                     if "start" in att and "end" in att:
                         if (
-                            att["start"] <= d["timestamp"]
-                            and d["timestamp"] <= att["end"]
+                            att["start"] - settings.alarm_gracetime <= d["timestamp"]
+                            and d["timestamp"] <= att["end"] + settings.alarm_gracetime
                         ):
                             scenarios.add((att["id"], att["start"], att["end"]))
 

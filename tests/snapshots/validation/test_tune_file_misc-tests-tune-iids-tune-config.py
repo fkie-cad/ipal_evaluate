@@ -56,6 +56,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     '1': 0.899002493765586
   TPA: 19
   _evaluation-config:
+    alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
     compresslevel: 9
@@ -85,7 +86,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   _iids-config:
     combiner:
-      _type: All
+      _type: Any
       model-file: model-combiner
     combiner_config: config-combiner.json
     compresslevel: 9
@@ -145,6 +146,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   
 ###IGNORE-LINE###
+###IGNORE-LINE###
   Accuracy: 0.9825036450739429
   Affiliation-F0.1: 0.9978207310924933
   Affiliation-F0.5: 0.9982215180400754
@@ -185,6 +187,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     '1': 0.899002493765586
   TPA: 19
   _evaluation-config:
+    alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
     compresslevel: 9
@@ -214,7 +217,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   _iids-config:
     combiner:
-      _type: All
+      _type: Any
       model-file: model-combiner
     combiner_config: config-combiner.json
     compresslevel: 9
@@ -274,6 +277,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   
 ###IGNORE-LINE###
+###IGNORE-LINE###
   Accuracy: 0.9825036450739429
   Affiliation-F0.1: 0.9978207310924933
   Affiliation-F0.5: 0.9982215180400754
@@ -314,6 +318,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     '1': 0.899002493765586
   TPA: 19
   _evaluation-config:
+    alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
     compresslevel: 9
@@ -343,7 +348,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   _iids-config:
     combiner:
-      _type: All
+      _type: Any
       model-file: model-combiner
     combiner_config: config-combiner.json
     compresslevel: 9
@@ -403,6 +408,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   
 ###IGNORE-LINE###
+###IGNORE-LINE###
   Accuracy: 0.9825036450739429
   Affiliation-F0.1: 0.9978207310924933
   Affiliation-F0.5: 0.9982215180400754
@@ -443,6 +449,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     '1': 0.899002493765586
   TPA: 19
   _evaluation-config:
+    alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
     compresslevel: 9
@@ -472,7 +479,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   _iids-config:
     combiner:
-      _type: All
+      _type: Any
       model-file: model-combiner
     combiner_config: config-combiner.json
     compresslevel: 9
@@ -531,6 +538,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   
+###IGNORE-LINE###
 == Status ==
 ###IGNORE-LINE###
 ###IGNORE-LINE###

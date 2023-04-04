@@ -181,15 +181,14 @@ parameters = {
         },
     },
     "combiner": {
-        "_type": "Weights",
+        "_type": "Matrix",
         "model-file": "model-combiner",
-        "new_weight": 1.0,
         "use_scores": False,
         "keys": ["MinMax", "Gradient", "Exists"],
-        "weights": [
-            tune.uniform(0, 1),
-            tune.uniform(0, 1),
-            tune.uniform(0, 1),
+        "matrix": [
+            [tune.uniform(0, 1)],
+            [tune.uniform(0, 1)],
+            [tune.uniform(0, 1)],
         ],
         "threshold": tune.uniform(0, 1),
     },
@@ -202,7 +201,7 @@ reporter = tune.CLIReporter(
     max_column_length=80,
     sort_by_metric=True,
     parameter_columns={
-        "combiner/weights": "weights",
+        "combiner/matrix": "matrix",
         "combiner/threshold": "threshold",
     },
     max_report_frequency=3600,

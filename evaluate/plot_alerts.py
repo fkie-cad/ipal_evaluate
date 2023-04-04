@@ -64,7 +64,7 @@ def get_score(js):
             )
             settings.logger.error(
                 "Use any of {} instead".format(
-                    ", ".join([f"'{metric}'" for metric in js["scores"].keys()])
+                    ", ".join([f"'{ids}'" for ids in js["scores"].keys()])
                 )
             )
             exit(1)
@@ -78,7 +78,7 @@ def get_score(js):
             )
             settings.logger.error(
                 "Use any of {} instead".format(
-                    ", ".join([f"'{metric}'" for metric in js["scores"].keys()])
+                    ", ".join([f"'{ids}'" for ids in js["scores"].keys()])
                 )
             )
             exit(1)

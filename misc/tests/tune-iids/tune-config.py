@@ -76,7 +76,7 @@ parameters = {
             "threshold": tune.quniform(0, 2, 1e-1),
         }
     },
-    "combiner": {"_type": "All", "model-file": "model-combiner"},
+    "combiner": {"_type": "Any", "model-file": "model-combiner"},
 }
 
 search_alg = tune.search.BasicVariantGenerator()

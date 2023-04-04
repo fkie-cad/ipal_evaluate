@@ -1,3 +1,5 @@
+import evaluate.settings as settings
+
 from .metric import Metric, get_alarms
 
 
@@ -23,7 +25,10 @@ class TruePositiveAlarms(Metric):
 
         for start, end in get_alarms(dataset):
             for attack in attacks:
-                if start <= attack["end"] and end >= attack["start"]:  # any overlap
+                if (
+                    start <= attack["end"] + settings.alarm_gracetime
+                    and end >= attack["start"] - settings.alarm_gracetime
+                ):  # any overlap
                     count += 1
                     break
 
@@ -52,7 +57,10 @@ class FalsePositiveAlarms(Metric):
 
         for start, end in get_alarms(dataset):
             for attack in attacks:
-                if start <= attack["end"] and end >= attack["start"]:  # any overlap
+                if (
+                    start <= attack["end"] + settings.alarm_gracetime
+                    and end >= attack["start"] - settings.alarm_gracetime
+                ):  # any overlap
                     fpa.remove((start, end))
                     break
 

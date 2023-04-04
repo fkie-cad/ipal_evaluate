@@ -108,6 +108,7 @@
         "output": "-",
         "attacks": "misc/tests/attacks-3.json",
         "timed_dataset": true,
+        "alarm_gracetime": 0,
         "fscore_beta": [
             0.1,
             0.5,

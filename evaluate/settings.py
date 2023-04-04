@@ -1,7 +1,7 @@
 import logging
 from io import TextIOWrapper
 
-version = "v1.2.3"
+version = "v1.2.4"
 
 # Gzip options
 compresslevel = 9  # 0 no compress, 1 large/fast, 9 small/slow
@@ -19,6 +19,9 @@ logger = logging.getLogger("Evaluate")
 log = logging.WARNING
 logformat = "%(levelname)s:%(name)s: %(message)s"
 logfile = "-"
+
+# FPA grace time
+alarm_gracetime = 0
 
 # Metric settings
 fscore_betas = [0.1, 0.5, 1, 2, 10]  # calculate the f1-score
@@ -73,6 +76,7 @@ def evaluation_settings_to_dict():
         "attacks": attacks,
         "timed_dataset": timed_dataset,
         # Metric-specific settings
+        "alarm_gracetime": alarm_gracetime,
         "fscore_beta": fscore_betas,
         "eTaPR_theta_p": eTaPR_theta_p,
         "eTaPR_theta_r": eTaPR_theta_r,

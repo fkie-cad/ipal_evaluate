@@ -5,14 +5,14 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 Number of trials: 4/4 (3 PENDING, 1 RUNNING)
-+---------------------------+----------+-----------------+---------------------------------------------------------------+-------------+
-| Trial name                | status   | loc             | weights                                                       |   threshold |
-|---------------------------+----------+-----------------+---------------------------------------------------------------+-------------|
++---------------------------+----------+-----------------+---------------------------------------------------------------------+-------------+
+| Trial name                | status   | loc             | matrix                                                              |   threshold |
+|---------------------------+----------+-----------------+---------------------------------------------------------------------+-------------|
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-+---------------------------+----------+-----------------+---------------------------------------------------------------+-------------+
++---------------------------+----------+-----------------+---------------------------------------------------------------------+-------------+
 
 
 ###IGNORE-LINE###
@@ -55,6 +55,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     '1': 0.0
   TPA: 0
   _evaluation-config:
+    alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
     compresslevel: 9
@@ -84,19 +85,19 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   _iids-config:
     combiner:
-      _type: Weights
+      _type: Matrix
       keys:
       - MinMax
       - Gradient
       - Exists
+      lookahead: 0
+      matrix:
+      - - 0.1915194503788923
+      - - 0.6221087710398319
+      - - 0.4377277390071145
       model-file: model-combiner
-      new_weight: 1.0
       threshold: 0.7853585837137692
       use_scores: false
-      weights:
-      - 0.1915194503788923
-      - 0.6221087710398319
-      - 0.4377277390071145
     combiner_config: config-combiner.json
     compresslevel: 9
     config: config-iids.json
@@ -182,6 +183,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   
 ###IGNORE-LINE###
+###IGNORE-LINE###
   Accuracy: 0.9825036450739429
   Affiliation-F0.1: 0.9978207310924933
   Affiliation-F0.5: 0.9982215180400754
@@ -222,6 +224,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     '1': 0.899002493765586
   TPA: 19
   _evaluation-config:
+    alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
     compresslevel: 9
@@ -251,19 +254,19 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   _iids-config:
     combiner:
-      _type: Weights
+      _type: Matrix
       keys:
       - MinMax
       - Gradient
       - Exists
+      lookahead: 0
+      matrix:
+      - - 0.7799758081188035
+      - - 0.2725926052826416
+      - - 0.2764642551430967
       model-file: model-combiner
-      new_weight: 1.0
       threshold: 0.8018721775350193
       use_scores: false
-      weights:
-      - 0.7799758081188035
-      - 0.2725926052826416
-      - 0.2764642551430967
     combiner_config: config-combiner.json
     compresslevel: 9
     config: config-iids.json
@@ -349,6 +352,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   
 ###IGNORE-LINE###
+###IGNORE-LINE###
   Accuracy: 0.9825036450739429
   Affiliation-F0.1: 0.9978207310924933
   Affiliation-F0.5: 0.9982215180400754
@@ -389,6 +393,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     '1': 0.899002493765586
   TPA: 19
   _evaluation-config:
+    alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
     compresslevel: 9
@@ -418,19 +423,19 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   _iids-config:
     combiner:
-      _type: Weights
+      _type: Matrix
       keys:
       - MinMax
       - Gradient
       - Exists
+      lookahead: 0
+      matrix:
+      - - 0.9581393536837052
+      - - 0.8759326347420947
+      - - 0.35781726995786667
       model-file: model-combiner
-      new_weight: 1.0
       threshold: 0.5009951255234587
       use_scores: false
-      weights:
-      - 0.9581393536837052
-      - 0.8759326347420947
-      - 0.35781726995786667
     combiner_config: config-combiner.json
     compresslevel: 9
     config: config-iids.json
@@ -515,6 +520,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   
+###IGNORE-LINE###
 ###IGNORE-LINE###
   Accuracy: 0.9825036450739429
   Affiliation-F0.1: 0.9978207310924933
@@ -556,6 +562,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     '1': 0.899002493765586
   TPA: 19
   _evaluation-config:
+    alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
     compresslevel: 9
@@ -585,19 +592,19 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
   _iids-config:
     combiner:
-      _type: Weights
+      _type: Matrix
       keys:
       - MinMax
       - Gradient
       - Exists
+      lookahead: 0
+      matrix:
+      - - 0.6834629351721363
+      - - 0.7127020269829002
+      - - 0.37025075479039493
       model-file: model-combiner
-      new_weight: 1.0
       threshold: 0.5611961860656249
       use_scores: false
-      weights:
-      - 0.6834629351721363
-      - 0.7127020269829002
-      - 0.37025075479039493
     combiner_config: config-combiner.json
     compresslevel: 9
     config: config-iids.json
@@ -682,6 +689,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   
+###IGNORE-LINE###
 == Status ==
 ###IGNORE-LINE###
 ###IGNORE-LINE###
@@ -690,14 +698,14 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 Number of trials: 4/4 (4 TERMINATED)
-+---------------------------+------------+-----------------+---------------------------------------------------------------+-------------+--------+------------------+----------+
-| Trial name                | status     | loc             | weights                                                       |   threshold |   iter |   total time (s) |       F1 |
-|---------------------------+------------+-----------------+---------------------------------------------------------------+-------------+--------+------------------+----------|
++---------------------------+------------+-----------------+---------------------------------------------------------------------+-------------+--------+------------------+----------+
+| Trial name                | status     | loc             | matrix                                                              |   threshold |   iter |   total time (s) |       F1 |
+|---------------------------+------------+-----------------+---------------------------------------------------------------------+-------------+--------+------------------+----------|
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-+---------------------------+------------+-----------------+---------------------------------------------------------------+-------------+--------+------------------+----------+
++---------------------------+------------+-----------------+---------------------------------------------------------------------+-------------+--------+------------------+----------+
 
 
 ###IGNORE-LINE###
