@@ -22,7 +22,7 @@ authors:
   orcid: "https://orcid.org/0000-0001-8717-2523"
 title: "IPAL - Evaluate"
 version: 1.2.4
-doi: TODO
+doi: 10.0000/TODO
 date-released: 2023-03-21
 url: "https://github.com/fkie-cad/ipal_evaluate"
 preferred-citation:
@@ -47,8 +47,8 @@ preferred-citation:
   - family-names: "Martin"
     given-names: "Henze"
     orcid: "https://orcid.org/0000-0001-8717-2523"
-  doi: "TODO"
+  doi: 10.0000/TODO
   journal: "TODO"
-  month: TODO
+  month: 1
   title: "SoK: Evaluations in Industrial Intrusion Detection Research"
-  year: TODO
+  year: 1

@@ -30,6 +30,11 @@ isort:
   script:
   - isort --profile black --filter-files -c --skip ipal_transcriber --skip ipal_ids_framework --skip build .
 
+cffconvert:
+  stage: Static Analysis
+  script:
+  - cffconvert --validate -i CITATION.cff
+
 pytest:
   stage: Test
   script:
