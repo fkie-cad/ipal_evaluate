@@ -95,8 +95,10 @@ def normalize_scores(scores):  # normalize min/max to 0 1
 def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C901
     global IDSs, ATTACKFILE, DATASETNAME, GAPTIME, SCORE, MIN_WIDTH, MARKEDATTACKS
 
-    # PLOT IDS ALARMS
     count = 1
+    ipalidtotimestamp = {}
+
+    # PLOT IDS ALARMS
     for IDS, label in IDSs:
         count -= 1
         gaps = []
@@ -120,6 +122,10 @@ def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C90
                 while line:
                     js = json.loads(line)
                     t = datetime.datetime.fromtimestamp(js["timestamp"])
+
+                    # Collect ipalIDs
+                    if draw_ticks:
+                        ipalidtotimestamp[js["id"]] = js["timestamp"]
 
                     if last_timestamp is None:
                         last_timestamp = t
@@ -210,33 +216,68 @@ def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C90
     if ATTACKFILE is not None:
         with open_file(ATTACKFILE, "r") as f:
             for attack in json.load(f):
-                start = attack["start"] - START
-                end = attack["end"] - START
+                # Draw attack ticks
+                if draw_ticks and "ipalid" in attack:
+                    if attack["ipalid"] in ipalidtotimestamp:
+                        start = ipalidtotimestamp[attack["ipalid"]] - START
+                        for gap in gaps:
+                            if ipalidtotimestamp[attack["ipalid"]] - START > gap[0]:
+                                start -= gap[1].total_seconds()
 
-                for gap in gaps:
-                    if attack["start"] - START > gap[0]:
-                        start -= gap[1].total_seconds()
-                        end -= gap[1].total_seconds()
+                        ATTACKS.append((start, str(attack["id"]) in MARKEDATTACKS))
 
-                borders = (start, end)
-                ATTACKS.append(borders)
+                        if plot_attack_ids:
+                            ax.annotate(
+                                attack["id"], (start, 0.5), ha="center", va="center"
+                            )
+                    else:
+                        settings.logger.warning(
+                            f"IPAL ID {attack['ipalid']} from attack not found in dataset"
+                        )
 
-                rect = matplotlib.patches.Rectangle(
-                    (borders[0], 0),
-                    borders[1] - borders[0],
-                    1,
-                    color="#510ac9"
-                    if str(attack["id"]) in MARKEDATTACKS
-                    else "#a50303",
-                    linewidth=0,
-                )
-                ax.add_patch(rect)
+                # Draw attack ranges
+                elif "start" in attack and "end" in attack:
+                    start = attack["start"] - START
+                    end = attack["end"] - START
 
-                if "id" in attack and plot_attack_ids:
-                    rx, ry = rect.get_xy()
-                    cx = rx + rect.get_width() / 2.0
-                    cy = ry + rect.get_height() / 2.0
-                    ax.annotate(attack["id"], (cx, cy), ha="center", va="center")
+                    for gap in gaps:
+                        if attack["start"] - START > gap[0]:
+                            start -= gap[1].total_seconds()
+                            end -= gap[1].total_seconds()
+
+                    borders = (start, end)
+
+                    rect = matplotlib.patches.Rectangle(
+                        (borders[0], 0),
+                        borders[1] - borders[0],
+                        1,
+                        color="#510ac9"
+                        if str(attack["id"]) in MARKEDATTACKS
+                        else "#a50303",
+                        linewidth=0,
+                    )
+                    ax.add_patch(rect)
+
+                    if "id" in attack and plot_attack_ids:
+                        rx, ry = rect.get_xy()
+                        cx = rx + rect.get_width() / 2.0
+                        cy = ry + rect.get_height() / 2.0
+                        ax.annotate(attack["id"], (cx, cy), ha="center", va="center")
+
+                else:
+                    settings.logger.warning(
+                        f"Attack {attack['ipalid']} ignored! Try again with `--draw-ticks`"
+                    )
+
+        if draw_ticks:
+            ax.scatter(
+                [a[0] for a in ATTACKS],
+                [0.5] * len(ATTACKS),
+                marker="x",
+                color=["#510ac9" if a[1] else "#a50303" for a in ATTACKS],
+                s=5,
+            )
+
     else:
         settings.logger.warning("No attack file provided (--attacks)")
         settings.logger.warning("Plotting without attacks")

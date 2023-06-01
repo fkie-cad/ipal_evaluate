@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="ipal-evaluate",
-    version="1.2.4",
+    version="1.2.5",
     packages=find_packages(exclude="tests"),
     scripts=["ipal-evaluate", "ipal-plot-alerts", "ipal-plot-metrics", "ipal-tune"],
     install_requires=[
