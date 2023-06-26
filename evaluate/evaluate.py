@@ -248,7 +248,8 @@ def evaluate(attacks, truth, predicted, dataset):
                     ergs[real_name] = None
 
         else:
-            ergs |= {real_name: None for real_name in metric.defines()}
+            dummy = {real_name: None for real_name in metric.defines()}
+            ergs = {**ergs, **dummy}
 
     return ergs
 

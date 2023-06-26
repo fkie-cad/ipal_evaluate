@@ -148,6 +148,9 @@ class IidsTrainable(tune.Trainable):
 
     def setup(self, config: dict) -> None:
         # Prepare config
+        if "_postprocess" in config:
+            config = config["_postprocess"](config)
+            del config["_postprocess"]
         self.settings = config["tune_config"]
 
         # File paths

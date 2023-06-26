@@ -76,6 +76,12 @@ config = {
     "mode": "max",
 }
 
+def postprocess(config):
+    # Hacky: Can be used to resolve nested parameter, which can not be handled by
+    # some optimizaion algorithms. This methods is called right before the parameters
+    # are handed over to ipal-iids
+    return config
+
 # Configure the IIDS and the combiner
 parameters = {
     # put IIDS config here and define tunable hyperparameters
@@ -91,6 +97,8 @@ parameters = {
     },
 
     "combiner": {"_type": "Any", "model-file": "model-combiner"},
+
+    "_postprocess": postprocess,
 }
 
 # Fine-tuning of the raytune search algorithm

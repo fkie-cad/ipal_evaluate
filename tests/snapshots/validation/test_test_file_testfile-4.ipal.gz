@@ -9,7 +9,7 @@
     "Recall": 0.0,
     "Inverse-Recall": 1.0,
     "Fallout": 0.0,
-    "Missrate": 0.1381484600851335,
+    "Missrate": 1.0,
     "Informedness": 0.0,
     "Markedness": -0.12138000000000004,
     "F0.1": 0,

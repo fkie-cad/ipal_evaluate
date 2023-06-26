@@ -151,7 +151,7 @@ class InverseRecall(Metric):
 class Fallout(Metric):
     _name = "Fallout"
     _description = "Fallout calculates the fraction of false alarms across the dataset. Synonyms: FPR."
-    _requires = ["fp", "tp", "fn"]
+    _requires = ["fp", "tn"]
     _requires_timed_dataset = False
     _requires_attacks = False
     _higher_is_better = False
@@ -166,8 +166,9 @@ class Fallout(Metric):
         ergs=None,
     ):
         assert ergs is not None
-        fp, tp, fn = ergs["fp"], ergs["tp"], ergs["fn"]
-        return {cls._name: 1 if fp + fn == 0 else fp / (tp + fn)}
+        fp, tn = ergs["fp"], ergs["tn"]
+        denominator = fp + tn
+        return {cls._name: 1 if denominator == 0 else fp / denominator}
 
 
 class MissRate(Metric):
@@ -175,7 +176,7 @@ class MissRate(Metric):
     _description = (
         "Missrate measures the fraction of missed malicious entries. Synonyms: FNR."
     )
-    _requires = ["fn", "tn", "fp"]
+    _requires = ["fn", "tp"]
     _requires_timed_dataset = False
     _requires_attacks = False
     _higher_is_better = False
@@ -190,8 +191,9 @@ class MissRate(Metric):
         ergs=None,
     ):
         assert ergs is not None
-        fn, tn, fp = ergs["fn"], ergs["tn"], ergs["fp"]
-        return {cls._name: 1 if tn + fp == 0 else fn / (tn + fp)}
+        fn, tp = ergs["fn"], ergs["tp"]
+        denominator = fn + tp
+        return {cls._name: 1 if denominator == 0 else fn / denominator}
 
 
 class Informedness(Metric):
