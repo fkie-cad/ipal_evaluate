@@ -31,6 +31,7 @@ METRICS = [
     "eTaR",
     "eTaP",
 ]
+ALL = [m for metric in utils.get_all_metrics().values() for m in metric.defines()]
 
 # Indicate whether a metric needs to be inverted such tat 0 is bad and 1 is good
 INVERT = [m._name for m in utils.get_all_metrics().values() if not m._higher_is_better]
@@ -269,7 +270,7 @@ def main():
         metavar="metrics",
         help="comma-separated list of metrics to be plotted (Default: '{}') Possible metrics are: {}".format(
             ",".join(METRICS),
-            ",".join(utils.get_all_metrics()),
+            ",".join(ALL),
         ),
         required=False,
     )
