@@ -275,8 +275,10 @@ def main():
 
     # Adjust training/test/attack files' paths
     config["train_file"] = os.path.abspath(config["train_file"])
-    config["attack_file"] = os.path.abspath(config["attack_file"])
-    config["combiner_file"] = os.path.abspath(config["combiner_file"])
+    if config["attack_file"] is not None:
+        config["attack_file"] = os.path.abspath(config["attack_file"])
+    if config["combiner_file"] is not None:
+        config["combiner_file"] = os.path.abspath(config["combiner_file"])
     config["test_files"] = [os.path.abspath(f) for f in config["test_files"]]
 
     # Configuring ray tune

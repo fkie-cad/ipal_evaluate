@@ -96,7 +96,8 @@ class IidsTrainable(tune.Trainable):
         cmd += f' --config "{self.config_iids}"'
         cmd += f' --train.{self.settings["file_type"]} "{self.settings["train_file"]}"'
         cmd += f' --combiner.config "{self.config_combiner}"'
-        cmd += f' --train.combiner "{self.settings["combiner_file"]}"'
+        if self.settings["combiner_file"] is not None:
+            cmd += f' --train.combiner "{self.settings["combiner_file"]}"'
         self._run_substep("train", cmd)
 
         # Perform live detection
