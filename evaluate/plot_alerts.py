@@ -4,6 +4,7 @@ import datetime
 import gzip
 import json
 import logging
+import sys
 from pathlib import Path
 
 import matplotlib
@@ -24,6 +25,8 @@ MARKEDATTACKS = []
 def open_file(filename, mode):
     if filename.endswith(".gz"):
         return gzip.open(filename, mode=mode, compresslevel=settings.compresslevel)
+    elif filename == "-":
+        return sys.stdin
     else:
         return open(filename, mode=mode, buffering=1)
 
@@ -92,7 +95,9 @@ def normalize_scores(scores):  # normalize min/max to 0 1
     return [(s - m) / (1 if M - m == 0 else M - m) for s in scores]
 
 
-def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C901
+def plot(  # noqa: C901
+    ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True, mark_skip=False
+):  # noqa: C901
     global IDSs, ATTACKFILE, DATASETNAME, GAPTIME, SCORE, MIN_WIDTH, MARKEDATTACKS
 
     count = 1
@@ -106,6 +111,7 @@ def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C90
         ALERT = []
         FALSE_ALERT = []
         SCORES = []
+        SKIPS = []
 
         ATTACK_START = None
         excess = 0
@@ -133,6 +139,13 @@ def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C90
                     elif t - last_timestamp > datetime.timedelta(minutes=GAPTIME):
                         delta = t - last_timestamp
                         gaps.append((js["timestamp"] - START, delta))
+                        SKIPS.append(
+                            js["timestamp"]
+                            - START
+                            - sum([g[1].total_seconds() for g in gaps])
+                        )
+                        settings.logger.info(f"Skipped Gap of {delta}")
+
                     last_timestamp = t
 
                     relativ_time = js["timestamp"] - START
@@ -206,6 +219,9 @@ def plot(ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True):  # noqa: C90
 
         if SCORE is not None:
             ax.plot(T, [count - 1 + s for s in normalize_scores(SCORES)])
+
+        if mark_skip:
+            ax.scatter(SKIPS, [count - 0.5] * len(SKIPS), marker="1", color="grey")
 
     END = js["timestamp"]
 
@@ -365,6 +381,22 @@ def main():
     )
 
     parser.add_argument(
+        "--mark-skip",
+        help="Indicate when a gap was introduced during plotting (see --max-gap)",
+        required=False,
+        default=False,
+        action="store_true",
+    )
+
+    parser.add_argument(
+        "--max-gap",
+        metavar="minutes",
+        help="Allowed time in minutes of data gaps until after which a gap is skipped. (Default: 30)",
+        default=0,
+        required=False,
+    )
+
+    parser.add_argument(
         "--min-width",
         metavar="seconds",
         help="Minimum width of attack bars in dataset entries (Default: 0)",
@@ -435,6 +467,9 @@ def main():
     if args.min_width:
         MIN_WIDTH = int(args.min_width)
 
+    if args.max_gap:
+        GAPTIME = int(args.max_gap)
+
     if args.mark_attacks:
         MARKEDATTACKS = args.mark_attacks.split(",")
 
@@ -447,6 +482,7 @@ def main():
         draw_ticks=args.draw_ticks,
         plot_attack_ids=args.draw_attack_id,
         mark_fp=args.mark_fp,
+        mark_skip=args.mark_skip,
     )
 
     if args.title:

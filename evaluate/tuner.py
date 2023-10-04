@@ -141,7 +141,8 @@ class IidsTrainable(tune.Trainable):
 
         # Evaluate
         cmd = f"ipal-evaluate {logging}"
-        cmd += f' --attacks "{self.settings["attack_file"]}"'
+        if self.settings["attack_file"] is not None:
+            cmd += f' --attacks "{self.settings["attack_file"]}"'
         cmd += f' --timed-dataset "{self.settings["is_timed_dataset"]}"'
         cmd += f' --output "{self.evaluate_file}" "{self.output_file}"'
         self._run_substep("evaluate", cmd)

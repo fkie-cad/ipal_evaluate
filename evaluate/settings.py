@@ -1,7 +1,7 @@
 import logging
 from io import TextIOWrapper
 
-version = "v1.2.6"
+version = "v1.2.7"
 
 # Gzip options
 compresslevel = 9  # 0 no compress, 1 large/fast, 9 small/slow

@@ -19,6 +19,11 @@ config = {
     "mode": "max",
 }
 
+
+def postprocess(config):
+    return config
+
+
 # Configure the IIDS and the combiner
 parameters = {
     # put IIDS config here and define tunable hyperparameters with, e.g.:
@@ -77,6 +82,7 @@ parameters = {
         }
     },
     "combiner": {"_type": "Any", "model-file": "model-combiner"},
+    "_postprocess": postprocess,
 }
 
 search_alg = tune.search.BasicVariantGenerator()

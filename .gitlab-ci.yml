@@ -8,8 +8,11 @@ before_script:
   - apt-get -y install libgsl-dev
   - python3 --version
   - pip3 install numpy
-  - pip3 install -r requirements.txt
   - pip3 install -r requirements-dev.txt
+
+.install_evaluate:
+  script:
+    - pip3 install -r requirements.txt
 
 stages:
   - Static Analysis
@@ -39,9 +42,19 @@ cffconvert:
   - cffconvert --validate -i CITATION.cff
   allow_failure: true
 
+execute:
+  stage: Test
+  script:
+    - !reference [.install_evaluate, script]
+    - ./ipal-evaluate --version
+    - ./ipal-plot-alerts --version
+    - ./ipal-plot-metrics --version
+    - ./ipal-tune --version
+
 pytest:
   stage: Test
   script:
+    - !reference [.install_evaluate, script]
     - python3 -m pytest -vv --cov=metrics --cov=evaluate --cov-report term --cov-report xml:coverage.xml --cov-branch
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
