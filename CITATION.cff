@@ -14,6 +14,7 @@ authors:
   orcid: "https://orcid.org/0000-0003-0398-6904"
 - family-names: "Bauer"
   given-names: "Jan"
+  orcid: "https://orcid.org/0000-0001-7631-6456"
 - family-names: "Wehrle"
   given-names: "Klaus"
   orcid: "https://orcid.org/0000-0001-7252-4186"
@@ -22,7 +23,7 @@ authors:
   orcid: "https://orcid.org/0000-0001-8717-2523"
 title: "IPAL - Evaluate"
 version: 1.2.7
-doi: 10.0000/TODO
+doi: 10.5070/SR33162445
 date-released: 2023-03-21
 url: "https://github.com/fkie-cad/ipal_evaluate"
 preferred-citation:
@@ -41,14 +42,15 @@ preferred-citation:
     orcid: "https://orcid.org/0000-0003-0398-6904"
   - family-names: "Bauer"
     given-names: "Jan"
+    orcid: "https://orcid.org/0000-0001-7631-6456"
   - family-names: "Wehrle"
     given-names: "Klaus"
     orcid: "https://orcid.org/0000-0001-7252-4186"
   - family-names: "Martin"
     given-names: "Henze"
     orcid: "https://orcid.org/0000-0001-8717-2523"
-  doi: 10.0000/TODO
-  journal: "TODO"
-  month: 1
+  doi: 10.5070/SR33162445
+  journal: "Journal of Systems Research (JSys)"
+  month: 10
   title: "SoK: Evaluations in Industrial Intrusion Detection Research"
-  year: 1
+  year: 2023
