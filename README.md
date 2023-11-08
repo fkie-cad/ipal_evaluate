@@ -1,6 +1,6 @@
 # IPAL - Evaluate
 
-This repository is part of IPAL - an Industrial Protocol Abstraction Layer. IPAL aims to establish an abstract representation of industrial network traffic for subsequent unified and protocol-independent industrial intrusion detection. IPAL consists of a [transcriber](https://github.com/fkie-cad/ipal_transcriber) to automatically translate industrial traffic into the IPAL representation, an [IDS Framework](https://github.com/fkie-cad/ipal_ids_framework) implementing various industrial intrusion detection systems (IIDSs), and a collection of evaluation [datasets](https://github.com/fkie-cad/ipal_datasets). For details about IPAL, please refer to our publications listed down below.
+This repository is part of [IPAL](https://github.com/fkie-cad/ipal)  - an Industrial Protocol Abstraction Layer. IPAL aims to establish an abstract representation of industrial network traffic for subsequent unified and protocol-independent industrial intrusion detection. IPAL consists of a [transcriber](https://github.com/fkie-cad/ipal_transcriber) to automatically translate industrial traffic into the IPAL representation, an [IDS Framework](https://github.com/fkie-cad/ipal_ids_framework) implementing various industrial intrusion detection systems (IIDSs), and a collection of evaluation [datasets](https://github.com/fkie-cad/ipal_datasets). For details about IPAL, please refer to our publications listed down below.
 
 Industrial systems are increasingly threatened by cyber attacks with potentially disastrous consequences. To counter such attacks, industrial intrusion detection systems strive to uncover even the most sophisticated breaches in a timely manner. Due to its criticality for society, this fast-growing field attracts researchers from diverse backgrounds, resulting in huge momentum and diversity of contributions. Consequently, due to a lack of standard interfaces, standard tools for evaluating IDSs do not exist. Based on IPAL - a common message format that decouples IIDSs from domain-specific communication protocols, the `ipa-evalute` tool serves to address this problem by combining a variety of commonly used performance metrics into a single solution for scientific evaluation.
 
@@ -53,6 +53,8 @@ The evaluation framework contains implementations of the following metrics. Note
 - Wolsing, Konrad, Eric Wagner, and Martin Henze. "Poster: Facilitating Protocol-independent Industrial Intrusion Detection Systems." Proceedings of the 2020 ACM SIGSAC Conference on Computer and Communications Security. 2020 [https://doi.org/10.1145/3372297.3420019](https://doi.org/10.1145/3372297.3420019)
 
 ## Getting started
+
+If you are new to IPAL and want to learn about the general idea or try out our tutorials, please refer to IPAL's main repository: [https://github.com/fkie-cad/ipal](https://github.com/fkie-cad/ipal).
 
 ###### Prerequisites
 
