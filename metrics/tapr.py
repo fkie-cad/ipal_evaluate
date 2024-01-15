@@ -1,8 +1,6 @@
 import os
+import sys
 import tempfile
-
-from eTaPR_pkg import etapr
-from eTaPR_pkg.DataManage import File_IO
 
 import evaluate.settings as settings
 
@@ -20,6 +18,12 @@ class eTaPR(Metric):
 
     @classmethod
     def _list_to_eTaPr_list(cls, inlist):
+        try:
+            from eTaPR_pkg.DataManage import File_IO
+        except ModuleNotFoundError:
+            settings.logger.error("Please install eTaPR")
+            sys.exit(1)
+
         fd, path = tempfile.mkstemp()
 
         with os.fdopen(fd, "w") as tmp:
@@ -45,6 +49,12 @@ class eTaPR(Metric):
         attacks=None,
         ergs=None,
     ):
+        try:
+            from eTaPR_pkg import etapr
+        except ModuleNotFoundError:
+            settings.logger.error("Please install eTaPR")
+            sys.exit(1)
+
         assert truth is not None and predicted is not None
         if all([x == 0 for x in predicted]) or all([x == 0 for x in truth]):
             # eTaR/eTaP undefined for empty truth/prediction list, set everything to 0

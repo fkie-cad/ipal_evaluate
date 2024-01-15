@@ -1,4 +1,4 @@
-from math import exp, inf
+from math import exp
 from typing import Any, Dict, List
 
 import evaluate.settings as settings

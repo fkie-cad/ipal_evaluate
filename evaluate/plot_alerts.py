@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import argparse
-import datetime
 import gzip
 import json
 import logging
@@ -54,8 +53,12 @@ def initialize_logger(args):
 
 
 # Get the IDS suspicion scores if available
+LAST_SCORE = None
+
+
 def get_score(js):
     global SCORE
+    global LAST_SCORE
 
     if SCORE is None:
         return None
@@ -75,7 +78,7 @@ def get_score(js):
         return list(js["scores"].values())[0]
 
     else:
-        if SCORE not in js["scores"]:
+        if SCORE not in js["scores"] and LAST_SCORE is None:
             settings.logger.error(
                 "--score '{}' was provided but no such IIDS was found!".format(SCORE)
             )
@@ -86,6 +89,15 @@ def get_score(js):
             )
             exit(1)
 
+        if SCORE not in js["scores"] and LAST_SCORE is not None:
+            settings.logger.error(
+                "--score '{}' was provided but is not present in all lines!".format(
+                    SCORE
+                )
+            )
+            return LAST_SCORE
+
+        LAST_SCORE = js["scores"][SCORE]
         return js["scores"][SCORE]
 
 
@@ -123,11 +135,12 @@ def plot(  # noqa: C901
         try:  # load file into memory
             with open_file(IDS, "r") as f:
                 last_timestamp = None
+                last_relative_time = None
                 line = f.readline()
 
                 while line:
                     js = json.loads(line)
-                    t = datetime.datetime.fromtimestamp(js["timestamp"])
+                    t = js["timestamp"]
 
                     # Collect ipalIDs
                     if draw_ticks:
@@ -136,24 +149,22 @@ def plot(  # noqa: C901
                     if last_timestamp is None:
                         last_timestamp = t
                         START = js["timestamp"]
-                    elif t - last_timestamp > datetime.timedelta(minutes=GAPTIME):
+                    elif t - last_timestamp > GAPTIME * 60:
                         delta = t - last_timestamp
                         gaps.append((js["timestamp"] - START, delta))
                         SKIPS.append(
-                            js["timestamp"]
-                            - START
-                            - sum([g[1].total_seconds() for g in gaps])
+                            js["timestamp"] - START - sum([g[1] for g in gaps])
                         )
                         settings.logger.info(f"Skipped Gap of {delta}")
 
-                    last_timestamp = t
-
                     relativ_time = js["timestamp"] - START
                     for gap in gaps:
-                        relativ_time -= gap[1].total_seconds()
+                        relativ_time -= gap[1]
+                    if last_relative_time is None:
+                        last_relative_time = relativ_time
 
                     # enlarge attacks a tiny bit
-                    excess -= 1
+                    excess -= relativ_time - last_relative_time
                     if ATTACK_START is None and js["ids"]:
                         ATTACK_START = relativ_time
                     elif ATTACK_START is not None and not js["ids"]:
@@ -170,6 +181,9 @@ def plot(  # noqa: C901
                             or (excess > 0 and FALSE_ALERT[-1])  # enlarge false alert
                         )
                     SCORES.append(get_score(js))
+
+                    last_timestamp = t
+                    last_relative_time = relativ_time
 
                     line = f.readline()
 
@@ -238,7 +252,7 @@ def plot(  # noqa: C901
                         start = ipalidtotimestamp[attack["ipalid"]] - START
                         for gap in gaps:
                             if ipalidtotimestamp[attack["ipalid"]] - START > gap[0]:
-                                start -= gap[1].total_seconds()
+                                start -= gap[1]
 
                         ATTACKS.append((start, str(attack["id"]) in MARKEDATTACKS))
 
@@ -258,8 +272,8 @@ def plot(  # noqa: C901
 
                     for gap in gaps:
                         if attack["start"] - START > gap[0]:
-                            start -= gap[1].total_seconds()
-                            end -= gap[1].total_seconds()
+                            start -= gap[1]
+                            end -= gap[1]
 
                     borders = (start, end)
 
@@ -308,7 +322,7 @@ def plot(  # noqa: C901
     # plotting settings
     end = END - START
     for gap in gaps:
-        end -= gap[1].total_seconds()
+        end -= gap[1]
 
     Nticks = 10
     ticksEvery = end // 3600 / Nticks

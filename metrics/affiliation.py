@@ -1,5 +1,4 @@
-from affiliation.generics import convert_vector_to_events
-from affiliation.metrics import pr_from_events
+import sys
 
 import evaluate.settings as settings
 
@@ -30,6 +29,13 @@ class AffiliationMetric(Metric):
         attacks=None,
         ergs=None,
     ):
+        try:  # Load modules
+            from affiliation.generics import convert_vector_to_events
+            from affiliation.metrics import pr_from_events
+        except ModuleNotFoundError:
+            settings.logger.error("Please install affiliation-metrics-py")
+            sys.exit(1)
+
         assert truth is not None and predicted is not None
 
         # Cf. https://github.com/ahstat/affiliation-metrics-py#usage

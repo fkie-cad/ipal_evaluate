@@ -71,6 +71,8 @@ config = {
     "is_timed_dataset": True,
     "extend_alarms": False,
     "keep_output": False,
+    "plot_alerts": True,
+    "plot_alerts_arguments": "", # e.g., --draw-score
 
     "metric": "F1",
     "mode": "max",
@@ -256,6 +258,9 @@ def load_settings(args):
 
 
 def main():
+    # NOTE: Ray is testing new features. Opt-out since otherwise the Progress Reporter is ignored.
+    os.environ["RAY_AIR_NEW_OUTPUT"] = "0"
+
     # Argument parser and settings
     parser = argparse.ArgumentParser(prog="ipal-tune")
     prepare_arg_parser(parser)
@@ -309,14 +314,16 @@ def main():
             num_samples=config["num_samples"],
             search_alg=settings.config.search_alg,
         )
-
         run_config = air.RunConfig(
             name=config["name"],
-            local_dir="./",
+            storage_path=os.getcwd(),
             stop={"training_iteration": 1},  # we only have one iteration
             checkpoint_config=air.CheckpointConfig(checkpoint_at_end=False),
             progress_reporter=settings.config.reporter,
         )
+
+        # NOTE Workarround for bug. See https://github.com/ray-project/ray/issues/40009
+        os.environ["TUNE_RESULT_DIR"] = run_config.storage_path
 
         trainable_with_resources = tune.with_resources(
             IidsTrainable,

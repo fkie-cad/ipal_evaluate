@@ -146,6 +146,22 @@ class IidsTrainable(tune.Trainable):
         cmd += f' --timed-dataset "{self.settings["is_timed_dataset"]}"'
         cmd += f' --output "{self.evaluate_file}" "{self.output_file}"'
         self._run_substep("evaluate", cmd)
+
+        # Plot
+        if self.settings["plot_alerts"]:
+            if not self.settings["is_timed_dataset"]:
+                settings.logger.warning("Plotting non-temporal dataset")
+
+            cmd = f"ipal-plot-alerts {logging}"
+            if self.settings["attack_file"] is not None:
+                cmd += f' --attacks "{self.settings["attack_file"]}"'
+            cmd += f' {self.settings["plot_alerts_arguments"]}'
+            cmd += f' --output "{self.plot_file}" "{self.output_file}"'
+            self._run_substep("plot", cmd)
+        else:
+            self.status["plot"] = RunStatus.SKIP
+            self._save_status()
+
         self.cleanup()
 
     def setup(self, config: dict) -> None:
@@ -160,6 +176,7 @@ class IidsTrainable(tune.Trainable):
         self.config_combiner = "config-combiner.json"
         self.output_file = f'output.{self.settings["file_type"]}.gz'
         self.evaluate_file = "evaluate.json"
+        self.plot_file = "alerts.pdf"
         self.log_file = "logfile.txt"
         self.status_file = "status.json"
         self.runtime_file = "runtime.json"
@@ -183,6 +200,7 @@ class IidsTrainable(tune.Trainable):
                 "minimize": RunStatus.NOT_STARTED,
                 "merging": RunStatus.NOT_STARTED,
                 "evaluate": RunStatus.NOT_STARTED,
+                "plot": RunStatus.NOT_STARTED,
             }
 
         # Initiate runtime
@@ -197,6 +215,7 @@ class IidsTrainable(tune.Trainable):
                 "minimize": 0,
                 "merging": 0,
                 "evaluate": 0,
+                "plot": 0,
             }
 
     def step(self):

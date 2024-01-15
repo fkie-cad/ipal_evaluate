@@ -15,6 +15,8 @@ config = {
     "is_timed_dataset": True,
     "extend_alarms": False,
     "keep_output": False,
+    "plot_alerts": True,
+    "plot_alerts_arguments": "",
     "metric": "F1",
     "mode": "max",
 }

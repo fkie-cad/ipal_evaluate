@@ -1,4 +1,4 @@
-from sklearn.metrics import confusion_matrix
+import sys
 
 import evaluate.settings as settings
 
@@ -26,6 +26,12 @@ class Confusion(Metric):
         attacks=None,
         ergs=None,
     ):
+        try:  # Load modules
+            from sklearn.metrics import confusion_matrix
+        except ModuleNotFoundError:
+            settings.logger.error("Please install sklearn")
+            sys.exit(1)
+
         assert truth is not None and predicted is not None
 
         tn, fp, fn, tp = confusion_matrix(truth, predicted, labels=[0, 1]).ravel()

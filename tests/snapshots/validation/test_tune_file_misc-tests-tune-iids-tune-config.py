@@ -1,18 +1,17 @@
 == Status ==
 ###IGNORE-LINE###
-###IGNORE-LINE###
 Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-Number of trials: 4/4 (3 PENDING, 1 RUNNING)
-+---------------------------+----------+-----------------+-------------+
-| Trial name                | status   | loc             |   threshold |
-|---------------------------+----------+-----------------+-------------|
+###IGNORE-LINE###
++---------------------------+----------+-------+-------------+
+| Trial name                | status   | loc   |   threshold |
+|---------------------------+----------+-------+-------------|
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-+---------------------------+----------+-----------------+-------------+
++---------------------------+----------+-------+-------------+
 
 
 ###IGNORE-LINE###
@@ -37,7 +36,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   F10: 0.8997578273655077
   F2: 0.9145104008117707
   FPA: 4
-  Fallout: 0.016209476309226933
+  Fallout: 0.003250812703175794
   Informedness: 0.8957516810624102
   Inverse-Precision: 0.9800835997049422
   Inverse-Recall: 0.9967491872968242
@@ -45,7 +44,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   Jaccard-Index: 0.8846625766871166
   MCC: 0.9284647113528153
   Markedness: 0.962372428042817
-  Missrate: 0.020255063765941484
+  Missrate: 0.10099750623441396
   NAB-score-default: 28.47866918562389
   NAB-score-low-fn: 52.319112790415936
   NAB-score-low-fp: -43.021330814376135
@@ -91,6 +90,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     combiner_config: config-combiner.json
     compresslevel: 9
     config: config-iids.json
+    hostname: false
     idss:
       MinMax:
         _type: MinMax
@@ -127,7 +127,6 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   eTaF2: 0.939964512108935
   eTaP: 0.9036593079842766
   eTaR: 0.949501246882793
-###IGNORE-LINE###
   fn: 81
   fp: 13
 ###IGNORE-LINE###
@@ -138,11 +137,9 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-  timesteps_since_restore: 0
   tn: 3986
   tp: 721
   training_iteration: 1
-###IGNORE-LINE###
 ###IGNORE-LINE###
   
 ###IGNORE-LINE###
@@ -168,7 +165,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   F10: 0.8998690129009935
   F2: 0.9168362156663276
   FPA: 3
-  Fallout: 0.003740648379052369
+  Fallout: 0.0007501875468867217
   Informedness: 0.8982523062186993
   Inverse-Precision: 0.9801324503311258
   Inverse-Recall: 0.9992498124531133
@@ -176,7 +173,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   Jaccard-Index: 0.8956521739130435
   MCC: 0.9363141534585618
   Markedness: 0.9759888039222862
-  Missrate: 0.020255063765941484
+  Missrate: 0.10099750623441396
   NAB-score-default: 83.47866918562391
   NAB-score-low-fn: 88.98577945708261
   NAB-score-low-fp: 66.9786691856239
@@ -222,6 +219,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     combiner_config: config-combiner.json
     compresslevel: 9
     config: config-iids.json
+    hostname: false
     idss:
       MinMax:
         _type: MinMax
@@ -258,7 +256,6 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   eTaF2: 0.9497325321029638
   eTaP: 0.9506588008394444
   eTaR: 0.949501246882793
-###IGNORE-LINE###
   fn: 81
   fp: 3
 ###IGNORE-LINE###
@@ -269,11 +266,9 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-  timesteps_since_restore: 0
   tn: 3996
   tp: 721
   training_iteration: 1
-###IGNORE-LINE###
 ###IGNORE-LINE###
   
 ###IGNORE-LINE###
@@ -299,7 +294,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   F10: 0.8998690129009935
   F2: 0.9168362156663276
   FPA: 3
-  Fallout: 0.003740648379052369
+  Fallout: 0.0007501875468867217
   Informedness: 0.8982523062186993
   Inverse-Precision: 0.9801324503311258
   Inverse-Recall: 0.9992498124531133
@@ -307,7 +302,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   Jaccard-Index: 0.8956521739130435
   MCC: 0.9363141534585618
   Markedness: 0.9759888039222862
-  Missrate: 0.020255063765941484
+  Missrate: 0.10099750623441396
   NAB-score-default: 83.47866918562391
   NAB-score-low-fn: 88.98577945708261
   NAB-score-low-fp: 66.9786691856239
@@ -353,6 +348,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     combiner_config: config-combiner.json
     compresslevel: 9
     config: config-iids.json
+    hostname: false
     idss:
       MinMax:
         _type: MinMax
@@ -389,7 +385,6 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   eTaF2: 0.9497325321029638
   eTaP: 0.9506588008394444
   eTaR: 0.949501246882793
-###IGNORE-LINE###
   fn: 81
   fp: 3
 ###IGNORE-LINE###
@@ -400,11 +395,9 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-  timesteps_since_restore: 0
   tn: 3996
   tp: 721
   training_iteration: 1
-###IGNORE-LINE###
 ###IGNORE-LINE###
   
 ###IGNORE-LINE###
@@ -430,7 +423,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   F10: 0.8998690129009935
   F2: 0.9168362156663276
   FPA: 3
-  Fallout: 0.003740648379052369
+  Fallout: 0.0007501875468867217
   Informedness: 0.8982523062186993
   Inverse-Precision: 0.9801324503311258
   Inverse-Recall: 0.9992498124531133
@@ -438,7 +431,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   Jaccard-Index: 0.8956521739130435
   MCC: 0.9363141534585618
   Markedness: 0.9759888039222862
-  Missrate: 0.020255063765941484
+  Missrate: 0.10099750623441396
   NAB-score-default: 83.47866918562391
   NAB-score-low-fn: 88.98577945708261
   NAB-score-low-fp: 66.9786691856239
@@ -484,6 +477,7 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
     combiner_config: config-combiner.json
     compresslevel: 9
     config: config-iids.json
+    hostname: false
     idss:
       MinMax:
         _type: MinMax
@@ -520,7 +514,6 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
   eTaF2: 0.9497325321029638
   eTaP: 0.9506588008394444
   eTaR: 0.949501246882793
-###IGNORE-LINE###
   fn: 81
   fp: 3
 ###IGNORE-LINE###
@@ -531,30 +524,27 @@ Number of trials: 4/4 (3 PENDING, 1 RUNNING)
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-  timesteps_since_restore: 0
   tn: 3996
   tp: 721
   training_iteration: 1
 ###IGNORE-LINE###
-###IGNORE-LINE###
   
 ###IGNORE-LINE###
 == Status ==
-###IGNORE-LINE###
 ###IGNORE-LINE###
 Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 Number of trials: 4/4 (4 TERMINATED)
-+---------------------------+------------+-----------------+-------------+--------+------------------+----------+
-| Trial name                | status     | loc             |   threshold |   iter |   total time (s) |       F1 |
-|---------------------------+------------+-----------------+-------------+--------+------------------+----------|
++---------------------------+------------+----------------+-------------+--------+------------------+----------+
+| Trial name                | status     | loc            |   threshold |   iter |   total time (s) |       F1 |
+|---------------------------+------------+----------------+-------------+--------+------------------+----------|
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-+---------------------------+------------+-----------------+-------------+--------+------------------+----------+
++---------------------------+------------+----------------+-------------+--------+------------------+----------+
 
 
 ###IGNORE-LINE###
