@@ -289,15 +289,40 @@ def main():
     # Configuring ray tune
     ray.init(num_cpus=settings.max_cpus, num_gpus=settings.max_gpus)
 
+    tune_config = tune.TuneConfig(
+        metric=config["metric"],
+        mode=config["mode"],
+        num_samples=config["num_samples"],
+        search_alg=settings.config.search_alg,
+    )
+    run_config = air.RunConfig(
+        name=config["name"],
+        storage_path=os.getcwd(),
+        stop={"training_iteration": 1},  # we only have one iteration
+        checkpoint_config=air.CheckpointConfig(checkpoint_at_end=False),
+        progress_reporter=settings.config.reporter,
+    )
+    # NOTE Workarround for bug. See https://github.com/ray-project/ray/issues/40009
+    os.environ["TUNE_RESULT_DIR"] = run_config.storage_path
+
+    trainable_with_resources = tune.with_resources(
+        IidsTrainable,
+        {"cpu": config["cpus_per_trial"], "gpu": config["gpus_per_trial"]},
+    )
+
     # Tune
     t1 = time.time()
     settings.logger.info(f"Tuning started at {t1}")
+    settings.config.parameters["tune_config"] = config
 
     if not settings.restart and os.path.exists(config["name"]):
         settings.logger.info("Resuming experiment")
         # TODO test if the config file has not changed in between and warn the user if so
+
         tuner = tune.Tuner.restore(
-            path=config["name"], resume_errored=settings.resume_errored
+            path=os.path.abspath(config["name"]),
+            resume_errored=settings.resume_errored,
+            trainable=trainable_with_resources,
         )
 
     else:
@@ -307,30 +332,6 @@ def main():
             shutil.rmtree(config["name"])  # remove old experiment data
         except FileNotFoundError:
             pass
-
-        tune_config = tune.TuneConfig(
-            metric=config["metric"],
-            mode=config["mode"],
-            num_samples=config["num_samples"],
-            search_alg=settings.config.search_alg,
-        )
-        run_config = air.RunConfig(
-            name=config["name"],
-            storage_path=os.getcwd(),
-            stop={"training_iteration": 1},  # we only have one iteration
-            checkpoint_config=air.CheckpointConfig(checkpoint_at_end=False),
-            progress_reporter=settings.config.reporter,
-        )
-
-        # NOTE Workarround for bug. See https://github.com/ray-project/ray/issues/40009
-        os.environ["TUNE_RESULT_DIR"] = run_config.storage_path
-
-        trainable_with_resources = tune.with_resources(
-            IidsTrainable,
-            {"cpu": config["cpus_per_trial"], "gpu": config["gpus_per_trial"]},
-        )
-
-        settings.config.parameters["tune_config"] = config
 
         tuner = tune.Tuner(
             trainable_with_resources,

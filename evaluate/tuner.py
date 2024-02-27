@@ -148,7 +148,7 @@ class IidsTrainable(tune.Trainable):
         self._run_substep("evaluate", cmd)
 
         # Plot
-        if self.settings["plot_alerts"]:
+        if "plot_alerts" in self.settings and self.settings["plot_alerts"]:
             if not self.settings["is_timed_dataset"]:
                 settings.logger.warning("Plotting non-temporal dataset")
 
