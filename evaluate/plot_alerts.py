@@ -281,9 +281,11 @@ def plot(  # noqa: C901
                         (borders[0], 0),
                         borders[1] - borders[0],
                         1,
-                        color="#510ac9"
-                        if str(attack["id"]) in MARKEDATTACKS
-                        else "#a50303",
+                        color=(
+                            "#510ac9"
+                            if str(attack["id"]) in MARKEDATTACKS
+                            else "#a50303"
+                        ),
                         linewidth=0,
                     )
                     ax.add_patch(rect)

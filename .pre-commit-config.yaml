@@ -1,10 +1,10 @@
 repos:
 - repo: https://github.com/psf/black
-  rev: 23.1.0
+  rev: 24.2.0
   hooks:
     - id: black
+      config: pyproject.toml
       language_version: python3
-      args: ["--config", "pyproject.toml"]
 - repo: https://github.com/pycqa/flake8
   rev: 6.0.0
   hooks:
