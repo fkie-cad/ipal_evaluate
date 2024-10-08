@@ -1,32 +1,33 @@
 #!/usr/bin/env python3
+
 import argparse
-import gzip
 import importlib
 import logging
 import os
 import random
 import shutil
-import sys
+import threading
 import time
 
 import numpy as np
 import ray
-from ray import air, tune
+from ray import air, train, tune
 
 import evaluate.settings as settings
 from evaluate.tuner import IidsTrainable
 
+threadLock = threading.Lock()
+trialCounter = 0
 
-# Wrapper for hiding .gz files
-def open_file(filename, mode):
-    if filename is None:
-        return None
-    elif filename.endswith(".gz"):
-        return gzip.open(filename, mode=mode, compresslevel=settings.compresslevel)
-    elif filename == "-":
-        return sys.stdin
-    else:
-        return open(filename, mode=mode, buffering=1)
+
+def trial_name_creator(name, experimentName=None):
+    global threadLock, trialCounter
+
+    with threadLock:
+        n = trialCounter
+        trialCounter += 1
+
+    return f"{experimentName}-{n}"
 
 
 # Initialize logger
@@ -80,7 +81,7 @@ config = {
 
 def postprocess(config):
     # Hacky: Can be used to resolve nested parameter, which can not be handled by
-    # some optimizaion algorithms. This methods is called right before the parameters
+    # some optimization algorithms. This methods is called right before the parameters
     # are handed over to ipal-iids
     return config
 
@@ -193,8 +194,8 @@ def prepare_arg_parser(parser):
         "--compresslevel",
         dest="compresslevel",
         metavar="INT",
-        default=9,
-        help="set the gzip compress level. 0 no compress, 1 fast/large, ..., 9 slow/tiny. (Default: 9)",
+        default=6,
+        help="set the gzip compress level. 0 no compress, 1 fast/large, ..., 9 slow/tiny. (Default: 6)",
         required=False,
     )
 
@@ -218,7 +219,7 @@ def load_settings(args):
             )
             exit(1)
 
-        if settings.compresslevel < 0 or 9 < settings.compresslevel:
+        if 9 < settings.compresslevel < 0:
             settings.logger.error(
                 "Option '--compresslevel' must be an integer from 0-9"
             )
@@ -276,7 +277,7 @@ def main():
     np.random.seed(config["seed"])
 
     # Prepare directory and paths
-    os.chdir(os.path.dirname("./" + args.config))
+    os.chdir(os.path.dirname(f"./{args.config}"))
 
     # Adjust training/test/attack files' paths
     config["train_file"] = os.path.abspath(config["train_file"])
@@ -294,16 +295,19 @@ def main():
         mode=config["mode"],
         num_samples=config["num_samples"],
         search_alg=settings.config.search_alg,
+        trial_name_creator=lambda x: trial_name_creator(
+            x, experimentName=config["name"]
+        ),
+        trial_dirname_creator=lambda x: str(x),
     )
     run_config = air.RunConfig(
         name=config["name"],
         storage_path=os.getcwd(),
+        sync_config=train.SyncConfig(sync_artifacts=True),
         stop={"training_iteration": 1},  # we only have one iteration
         checkpoint_config=air.CheckpointConfig(checkpoint_at_end=False),
         progress_reporter=settings.config.reporter,
     )
-    # NOTE Workarround for bug. See https://github.com/ray-project/ray/issues/40009
-    os.environ["TUNE_RESULT_DIR"] = run_config.storage_path
 
     trainable_with_resources = tune.with_resources(
         IidsTrainable,
@@ -343,13 +347,10 @@ def main():
     results = tuner.fit()
 
     t2 = time.time()
-    settings.logger.info(f"Tuning ended at {t2} ({t2-t1}s)")
+    settings.logger.info(f"Tuning ended at {t2} ({t2 - t1}s)")
 
     print(
-        "best result for {}:".format(config["metric"])
-        + str(
-            results.get_best_result(metric=config["metric"], mode=config["mode"]).config
-        )
+        f"best result for {config['metric']}:{str(results.get_best_result(metric=config['metric'], mode=config['mode']).config)}"
     )
 
 

@@ -33,8 +33,9 @@ class DetectedScenarios(Metric):
                 for att in attacks:  # detected time range
                     if "start" in att and "end" in att:
                         if (
-                            att["start"] - settings.alarm_gracetime <= d["timestamp"]
-                            and d["timestamp"] <= att["end"] + settings.alarm_gracetime
+                            att["start"] - settings.alarm_gracetime
+                            <= d["timestamp"]
+                            <= att["end"] + settings.alarm_gracetime
                         ):
                             scenarios.add((att["id"], att["start"], att["end"]))
 
@@ -90,9 +91,7 @@ class ScenarioRecall(Metric):
                 continue
 
             if d["malicious"] not in scenarios:
-                settings.logger.warning(
-                    "Scenario '{}' not found!".format(d["malicious"])
-                )
+                settings.logger.warning(f"Scenario '{d['malicious']}' not found!")
                 continue
 
             if d["ids"]:
@@ -133,10 +132,7 @@ class PenaltyScore(Metric):
         for d in dataset:
             if d["ids"]:
                 for attack in attacks:
-                    if (
-                        attack["start"] <= d["timestamp"]
-                        and d["timestamp"] <= attack["end"]
-                    ):
+                    if attack["start"] <= d["timestamp"] <= attack["end"]:
                         break
                 else:
                     ps += d["timestamp"] - prev
@@ -165,26 +161,35 @@ class DetectionDelay(Metric):
     ):
         assert dataset is not None and attacks is not None and ergs is not None
         dd = 0
+
+        detected_scenarios = set(ergs["Detected-Scenarios"])
         detected = set()
+        detected_amount = 0
+        detected_before_amount = 0
         prev = dataset[0]["timestamp"]
 
+        # Filter attacks once before iterating over dataset
+        active_attacks = [
+            attack for attack in attacks if attack["id"] in detected_scenarios
+        ]
+
         for d in dataset:
-            for attack in attacks:
-                if (
-                    attack["id"] not in ergs["Detected-Scenarios"]
-                ):  # attack not detected at all
-                    continue
 
-                if attack["id"] in detected:  # attack already counted for dd
-                    continue
+            # Filter out already detected attacks
+            # for efficiency only filter if change occurred
+            if detected_amount != detected_before_amount:
+                detected_before_amount = detected_amount
+                active_attacks = [
+                    attack for attack in active_attacks if attack["id"] not in detected
+                ]
 
-                if (
-                    attack["start"] <= d["timestamp"]
-                    and d["timestamp"] <= attack["end"]
-                ):  # overlapping now
+            for attack in active_attacks:
+                # overlapping now
+                if attack["start"] <= d["timestamp"] <= attack["end"]:
                     dd += d["timestamp"] - max(prev, attack["start"])
                     if d["ids"]:  # attack detected
                         detected.add(attack["id"])
+                        detected_amount = len(detected)
 
             prev = d["timestamp"]
 

@@ -7,8 +7,8 @@ config = {
     "num_samples": 4,
     "cpus_per_trial": 1,
     "gpus_per_trial": 0,
-    "train_file": "<none>",
-    "combiner_file": "train.ipal",
+    "train_file": "train.ipal",
+    "combiner_file": "train-combiner.ipal",
     "test_files": ["test.ipal"],
     "attack_file": "attacks.json",
     "file_type": "state",
@@ -32,7 +32,7 @@ parameters = {
     "iids": {
         "MinMax": {
             "_type": "MinMax",
-            "model-file": "../../models/MinMax",
+            "model-file": "MinMax",
             "features": [
                 "state;1",
                 "state;2",
@@ -84,7 +84,7 @@ parameters = {
         },
         "Gradient": {
             "_type": "MinMax",
-            "model-file": "../../models/Gradient",
+            "model-file": "Gradient",
             "features": [
                 "state;1",
                 "state;2",
@@ -130,7 +130,7 @@ parameters = {
             ],
             "preprocessors": [
                 {
-                    "method": "gradient",
+                    "method": "Gradient",
                     "features": [
                         "state;1",
                         "state;2",
@@ -182,8 +182,8 @@ parameters = {
             "threshold": 1.0,
         },
         "Exists": {
-            "_type": "Exists",
-            "model-file": "../../models/Exists",
+            "_type": "ExistsIDS",
+            "model-file": "Exists",
             "threshold": 10.0,
         },
     },

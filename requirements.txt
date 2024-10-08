@@ -6,3 +6,5 @@ pandas
 matplotlib
 git+https://github.com/ahstat/affiliation-metrics-py.git
 ray[tune]
+orjson
+zlib-ng

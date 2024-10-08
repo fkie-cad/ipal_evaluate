@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any, Dict, List
+
 import evaluate.settings as settings
 
 
@@ -11,39 +15,35 @@ class Metric:
 
     @classmethod
     def defines(cls):
-        # By default a metric returns its own metric as calculation. However, this
+        # By default, a metric returns its own metric as calculation. However, this
         # may not be true for, e.g., the F-Score which can yield F1 F0.5 etc.
         return [cls._name]
 
     @classmethod
-    def check_requirements(cls, ergs, attacks, timed_dataset):
-        # Check if datset is timed
+    def check_requirements(
+        cls, ergs, attacks: List[Dict[str, Any]], timed_dataset: Any | None
+    ):
+        # Check if dataset is timed
         if cls._requires_timed_dataset and not timed_dataset:
-            settings.logger.warning(
-                "'{}' requires timed dataset (skipped)".format(cls._name)
-            )
+            settings.logger.warning(f"'{cls._name}' requires timed dataset (skipped)")
             return False
 
         # Check attack requirements
         if cls._requires_attacks and (attacks is None or len(attacks) == 0):
-            settings.logger.warning("'{}' requires attacks (skipped)".format(cls._name))
+            settings.logger.warning(f"'{cls._name}' requires attacks (skipped)")
             return False
 
         # Check required metrics if needed
         if len(cls._requires) > 0:
             if ergs is None:  # No metrics provided
                 settings.logger.warning(
-                    "'{}' requires '{}' (skipped)".format(
-                        cls._name, ",".join(cls._requires)
-                    )
+                    f"'{cls._name}' requires '{','.join(cls._requires)}' (skipped)"
                 )
                 return False
 
             for req in cls._requires:  # check if all are provided
                 if req not in ergs:
-                    settings.logger.warning(
-                        "'{}' requires '{}' (skipped)".format(cls._name, req)
-                    )
+                    settings.logger.warning(f"'{cls._name}' requires '{req}' (skipped)")
                     return False
 
         # All requirements passed

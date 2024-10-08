@@ -56,7 +56,7 @@
     "Affiliation-F10": 0.8784910142731616,
     "_evaluation-config": {
 ###IGNORE-LINE###
-        "compresslevel": 9,
+        "compresslevel": 6,
         "input": "misc/tests/testfile-2.ipal.gz",
         "output": "-",
         "attacks": "misc/tests/attacks-2.json",

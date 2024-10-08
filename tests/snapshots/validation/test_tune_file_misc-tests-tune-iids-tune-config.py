@@ -4,25 +4,25 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-+---------------------------+----------+-------+-------------+
-| Trial name                | status   | loc   |   threshold |
-|---------------------------+----------+-------+-------------|
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-+---------------------------+----------+-------+-------------+
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
 
 
 ###IGNORE-LINE###
   Accuracy: 0.9804207456779838
-  Affiliation-F0.1: 0.9917669160776954
-  Affiliation-F0.5: 0.9933204057574856
-  Affiliation-F1: 0.995781931586812
-  Affiliation-F10: 0.9998295875788863
-  Affiliation-F2: 0.9982556874309898
-  Affiliation-Precision: 0.9916861382761425
-  Affiliation-Recall: 0.9999116975318421
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
   BATADAL: 0.9708168216388859
   BATADAL-CLF: 0.9478758405312051
   BATADAL-TTD: 0.9937578027465668
@@ -58,7 +58,7 @@ Using FIFO scheduling algorithm.
     alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
-    compresslevel: 9
+    compresslevel: 6
     eTaPR_delta: 0.0
     eTaPR_theta_p: 0.5
     eTaPR_theta_r: 0.01
@@ -88,7 +88,7 @@ Using FIFO scheduling algorithm.
       _type: Any
       model-file: model-combiner
     combiner_config: config-combiner.json
-    compresslevel: 9
+    compresslevel: 6
     config: config-iids.json
     hostname: false
     idss:
@@ -145,13 +145,13 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   Accuracy: 0.9825036450739429
-  Affiliation-F0.1: 0.9978207310924933
-  Affiliation-F0.5: 0.9982215180400754
-  Affiliation-F1: 0.9988546653250138
-  Affiliation-F10: 0.9998907444896311
-  Affiliation-F2: 0.9994886162991214
-  Affiliation-Precision: 0.9977998655896965
-  Affiliation-Recall: 0.9999116975318421
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -187,7 +187,7 @@ Using FIFO scheduling algorithm.
     alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
-    compresslevel: 9
+    compresslevel: 6
     eTaPR_delta: 0.0
     eTaPR_theta_p: 0.5
     eTaPR_theta_r: 0.01
@@ -217,7 +217,7 @@ Using FIFO scheduling algorithm.
       _type: Any
       model-file: model-combiner
     combiner_config: config-combiner.json
-    compresslevel: 9
+    compresslevel: 6
     config: config-iids.json
     hostname: false
     idss:
@@ -274,13 +274,13 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   Accuracy: 0.9825036450739429
-  Affiliation-F0.1: 0.9978207310924933
-  Affiliation-F0.5: 0.9982215180400754
-  Affiliation-F1: 0.9988546653250138
-  Affiliation-F10: 0.9998907444896311
-  Affiliation-F2: 0.9994886162991214
-  Affiliation-Precision: 0.9977998655896965
-  Affiliation-Recall: 0.9999116975318421
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -316,7 +316,7 @@ Using FIFO scheduling algorithm.
     alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
-    compresslevel: 9
+    compresslevel: 6
     eTaPR_delta: 0.0
     eTaPR_theta_p: 0.5
     eTaPR_theta_r: 0.01
@@ -346,7 +346,7 @@ Using FIFO scheduling algorithm.
       _type: Any
       model-file: model-combiner
     combiner_config: config-combiner.json
-    compresslevel: 9
+    compresslevel: 6
     config: config-iids.json
     hostname: false
     idss:
@@ -403,13 +403,13 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   Accuracy: 0.9825036450739429
-  Affiliation-F0.1: 0.9978207310924933
-  Affiliation-F0.5: 0.9982215180400754
-  Affiliation-F1: 0.9988546653250138
-  Affiliation-F10: 0.9998907444896311
-  Affiliation-F2: 0.9994886162991214
-  Affiliation-Precision: 0.9977998655896965
-  Affiliation-Recall: 0.9999116975318421
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -445,7 +445,7 @@ Using FIFO scheduling algorithm.
     alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
-    compresslevel: 9
+    compresslevel: 6
     eTaPR_delta: 0.0
     eTaPR_theta_p: 0.5
     eTaPR_theta_r: 0.01
@@ -475,7 +475,7 @@ Using FIFO scheduling algorithm.
       _type: Any
       model-file: model-combiner
     combiner_config: config-combiner.json
-    compresslevel: 9
+    compresslevel: 6
     config: config-iids.json
     hostname: false
     idss:

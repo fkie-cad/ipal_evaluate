@@ -1,16 +1,16 @@
 import logging
-from io import TextIOWrapper
+from typing import IO
 
-version = "v1.2.9"
+version = "v1.3.1"
 
 # Gzip options
-compresslevel = 9  # 0 no compress, 1 large/fast, 9 small/slow
+compresslevel = 6  # 0 no compress, 1 large/fast, 9 small/slow
 
 # In and output
 input = None
-inputfd: TextIOWrapper
+inputfd: IO
 output = None
-outputfd: TextIOWrapper
+outputfd: IO
 attacks = None
 timed_dataset = True
 

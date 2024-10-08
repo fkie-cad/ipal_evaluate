@@ -31,6 +31,11 @@ def test_test_file(file):
         ]
     )
 
-    assert errno == 0
+    if errno != 0:
+        print(f"{'=' * 20} FAILED {'=' * 20}")
+        print(stdout.decode("utf-8"))
+        print(stderr.decode("utf-8"))
+        assert errno == 0
+
     assert stderr == "" or b"ERROR" not in stderr
     check_with_validation_file(file[0], stdout.decode("utf-8"), test_test_file.__name__)

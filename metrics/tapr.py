@@ -36,9 +36,7 @@ class eTaPR(Metric):
 
     @classmethod
     def defines(cls):
-        return ["eTaP", "eTaR"] + [
-            "eTaF{}".format(beta) for beta in settings.fscore_betas
-        ]
+        return ["eTaP", "eTaR"] + [f"eTaF{beta}" for beta in settings.fscore_betas]
 
     @classmethod
     def calculate(
@@ -81,7 +79,7 @@ class eTaPR(Metric):
             ergs={"Precision": result["eTaP"], "Recall": result["eTaR"]}
         )
         for fscore, score in fscores.items():
-            output["eTa{}".format(fscore)] = score
+            output[f"eTa{fscore}"] = score
 
         assert abs(fscores["F1"] - result["f1"]) < 0.001
 

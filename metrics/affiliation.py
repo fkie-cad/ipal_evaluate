@@ -53,6 +53,6 @@ class AffiliationMetric(Metric):
             ergs={"Precision": result["precision"], "Recall": result["recall"]}
         )
         for fscore, score in fscores.items():
-            output["Affiliation-{}".format(fscore)] = score
+            output[f"Affiliation-{fscore}"] = score
 
         return output

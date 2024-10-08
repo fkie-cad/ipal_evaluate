@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import argparse
-import gzip
-import json
 import logging
 import sys
 import traceback
-from typing import Any, Dict, List
+from os import PathLike
+from pathlib import Path
+from typing import IO, Any, Dict, List
+
+import orjson
+from zlib_ng import gzip_ng_threaded as gzip
 
 import evaluate.settings as settings
 from evaluate.utils import parse_ipal_input
@@ -14,12 +17,48 @@ from metrics.utils import get_all_metrics
 REQUIRED_KEYS = ["id", "timestamp", "malicious", "ids"]
 
 
-# Wrapper for hiding .gz files
-def open_file(filename, mode):
-    if filename.endswith(".gz"):
-        return gzip.open(filename, mode=mode, compresslevel=settings.compresslevel)
+def open_file(
+    filename: str | PathLike | Path,
+    mode: str = "r",
+    compresslevel: int | None = None,
+    force_gzip: bool = False,
+) -> IO | None:
+    """
+    Wrapper to hide .gz files and stdin/stdout
+
+    :param filename: filename to open
+    :param mode: file mode
+    :param compresslevel: force compresslevel, if None level is taken from settings
+    :param force_gzip: if file should be treated as gzip even without .gz ending
+    :return: file-like object or None
+    """
+
+    # make sure filename is a string and not path-like object
+    filename = str(filename)
+
+    if not compresslevel:
+        compresslevel = settings.compresslevel
+
+    if filename == "-" and force_gzip:
+        # we can give gzip stdin/stdout to read / write from if explicitly wanted
+        if "r" in mode:
+            filename = sys.stdin
+        elif "w" in mode:
+            filename = sys.stdout
+
+    if filename is None:
+        return None
+    elif filename.endswith(".gz") or force_gzip:
+        return gzip.open(filename, mode=mode, compresslevel=compresslevel, threads=-1)
+    elif (filename == "-" or filename == "stdin") and "r" in mode:
+        return sys.stdin
+    elif (filename == "-" or filename == "stdout") and "w" in mode:
+        return sys.stdout
     else:
-        return open(filename, mode=mode, buffering=1)
+        if "b" in mode:
+            return open(filename, mode=mode, buffering=0)
+        else:
+            return open(filename, mode=mode, buffering=1)
 
 
 # Initialize logger
@@ -100,8 +139,8 @@ def prepare_arg_parser(parser):
         "--compresslevel",
         dest="compresslevel",
         metavar="INT",
-        default=9,
-        help="set the gzip compress level (0 no compress, 1 fast/large, ..., 9 slow/tiny) (Default: 9)",
+        default=6,
+        help="set the gzip compress level (0 no compress, 1 fast/large, ..., 9 slow/tiny) (Default: 6)",
         required=False,
     )
 
@@ -122,7 +161,7 @@ def load_settings(args):
             )
             exit(1)
 
-        if settings.compresslevel < 0 or 9 < settings.compresslevel:
+        if 9 < settings.compresslevel < 0:
             settings.logger.error(
                 "Option '--compresslevel' must be an integer from 0-9"
             )
@@ -132,21 +171,13 @@ def load_settings(args):
     if args.input:
         settings.input = args.input[0]
 
-    if settings.input != "stdout" and settings.input != "-":
-        settings.inputfd = open_file(settings.input, "r")
-    else:
-        settings.inputfd = sys.stdin
+    settings.inputfd = open_file(settings.input, "rb")
 
     # Parse and open output file
     if args.output:
         settings.output = args.output
 
-    if settings.output != "stdout" and settings.output != "-":
-        # clear the file we are about to write to
-        open_file(settings.output, "wt").close()
-        settings.outputfd = open_file(settings.output, "wt")
-    else:
-        settings.outputfd = sys.stdout
+    settings.outputfd = open_file(settings.output, "wb")
 
     # Parse attacks
     if args.attacks:
@@ -154,12 +185,13 @@ def load_settings(args):
 
     # Parse timed
     if args.timed:
-        if args.timed in ["True", "true"]:
+        timed_value = args.timed.lower()
+        if timed_value == "true":
             settings.timed_dataset = True
-        elif args.timed in ["False", "false"]:
+        elif timed_value == "false":
             settings.timed_dataset = False
         else:
-            settings.logger.error("Option '--timed-dataset' must be true or false")
+            settings.logger.error("Option '--timed-dataset' must be 'true' or 'false'.")
             sys.exit(1)
     else:
         settings.timed_dataset = True
@@ -178,78 +210,70 @@ def check_timed_attacks_keys(attacks: List[Dict[str, Any]]) -> bool:
 
 
 def check_timed_attacks_order(attacks: List[Dict[str, Any]]) -> bool:
-    error = False
+    error_detected = False
+    warnings = []
 
     sorted_attacks = sorted(attacks, key=lambda x: x["start"])
-    warning = []
+
+    # Check if attacks are in the correct chronological order
     for i, attack in enumerate(attacks):
         if attack != sorted_attacks[i]:
-            other_index = 0
-            for j, other_attack in enumerate(attacks):
-                if sorted_attacks[i] == other_attack:
-                    other_index = j
-                    break
-            warning.append(f", attack {i} with id '{attack['id']}' starts ")
-            warning.append(
-                f"{'after' if sorted_attacks[i]['start'] < attack['start'] else 'before'} "
+            original_index = attacks.index(sorted_attacks[i])
+            warnings.append(
+                f"Attack {i} with id '{attack['id']}' is out of order: "
+                f"starts {'after' if sorted_attacks[i]['start'] < attack['start'] else 'before'} "
+                f"attack {original_index} with id '{sorted_attacks[i]['id']}'."
             )
-            warning.append(f"attack {other_index} with id '{sorted_attacks[i]['id']}'")
-            error = True
+            error_detected = True
 
-    if len(warning) > 0:
+    if error_detected:
         settings.logger.error(
-            "".join(
-                ["Attacks must be sorted chronologically, yet"]
-                + warning
-                + [
-                    ". Fix the attack file to ensure that metrics are computed correctly"
-                ]
-            )
+            f"Attacks must be sorted chronologically. {' '.join(warnings)} "
+            "Fix the attack file to ensure that metrics are computed correctly."
         )
-    warning = []
+
+    # Check for overlapping attacks
+    overlap_warnings = []
     for i in range(1, len(sorted_attacks)):
         if sorted_attacks[i]["start"] <= sorted_attacks[i - 1]["end"]:
-            warning.append(f", attack with id '{sorted_attacks[i]['id']}' starts at ")
-            warning.append(f"timestamp {sorted_attacks[i]['start']} before ")
-            warning.append(f"attack with id '{sorted_attacks[i-1]['id']}' ends at ")
-            warning.append(f"timestamp {sorted_attacks[i-1]['end']}")
-    if len(warning) > 0:
-        settings.logger.warning(
-            "".join(
-                ["Attacks must be non-overlapping, yet"]
-                + warning
-                + [". Some metrics might not be computed correctly"]
+            overlap_warnings.append(
+                f"Attack with id '{sorted_attacks[i]['id']}' starts at timestamp {sorted_attacks[i]['start']} "
+                f"before attack with id '{sorted_attacks[i - 1]['id']}' "
+                f"ends at timestamp {sorted_attacks[i - 1]['end']}."
             )
+
+    if overlap_warnings:
+        settings.logger.warning(
+            f"Attacks must be non-overlapping. {' '.join(overlap_warnings)} "
+            "Some metrics might not be computed correctly."
         )
-    return error
+
+    return error_detected
 
 
-def evaluate(attacks, truth, predicted, dataset):
+def evaluate(
+    attacks: List[Dict[str, Any]], truth, predicted, dataset
+) -> Dict[str, Any]:
     ergs = {}
+    metrics = get_all_metrics()
 
-    # Evaluate point based metrics
-    for name, metric in get_all_metrics().items():
+    for name, metric in metrics.items():
         if metric.check_requirements(ergs, attacks, settings.timed_dataset):
             try:
-                ergs = {
-                    **ergs,
-                    **metric.calculate(truth, predicted, dataset, attacks, ergs),
-                }
-                settings.logger.info("Calculated '{}'".format(name))
-
+                # Update ergs with the new calculated values
+                ergs.update(metric.calculate(truth, predicted, dataset, attacks, ergs))
+                settings.logger.info(f"Calculated '{name}' metric.")
             except Exception as e:
-                settings.logger.error(
-                    "Failed calculating the '{}' metric!".format(name)
-                )
+                settings.logger.error(f"Failed calculating the '{name}' metric!")
                 settings.logger.debug(traceback.format_exc())
                 settings.logger.error(str(e))
 
+                # Ensure that all metric results are set to None if an error occurs
                 for real_name in metric.defines():
                     ergs[real_name] = None
-
         else:
-            dummy = {real_name: None for real_name in metric.defines()}
-            ergs = {**ergs, **dummy}
+            # If requirements aren't met, set all expected metric results to None
+            ergs.update({real_name: None for real_name in metric.defines()})
 
     return ergs
 
@@ -264,9 +288,9 @@ def main():
 
     # 1) Load attacks
     if args.attacks:
-        settings.logger.info("Loading attacks from {}".format(settings.attacks))
-        with open_file(settings.attacks, "r") as f:
-            attacks = json.load(f)
+        settings.logger.info(f"Loading attacks from {settings.attacks}")
+        with open_file(settings.attacks, "rb") as f:
+            attacks = orjson.loads(f.read())
 
     else:
         settings.logger.warning("No attack file provided! Some metrics may be skipped")
@@ -278,21 +302,20 @@ def main():
             sys.exit(1)
 
     # 2) Load IDS classification results
-    settings.logger.info("Loading dataset from {}".format(settings.input))
+    settings.logger.info(f"Loading dataset from {settings.input}")
 
     dataset = []
     _first = True
 
-    for line in settings.inputfd.readlines():
-        js = json.loads(line)
+    for line in settings.inputfd:
+        js = orjson.loads(line)
 
         if _first:  # Forward transcriber/ipal_iids parameters
             configs = {k: v for k, v in js.items() if k.startswith("_")}
             _first = False
 
         # Avoid loading the entire dataset into memory
-        for rm in [key for key in js if key not in REQUIRED_KEYS]:
-            del js[rm]
+        js = {key: js[key] for key in REQUIRED_KEYS if key in js}
 
         dataset.append(js)
 
@@ -320,8 +343,20 @@ def main():
     ergs["_evaluation-config"] = settings.evaluation_settings_to_dict()
 
     # 5) json export
-    settings.logger.info("Writing evaluation files to {}".format(settings.output))
-    settings.outputfd.write(json.dumps({**ergs, **configs}, indent=4) + "\n")
+    settings.logger.info(f"Writing evaluation files to {settings.output}")
+    serialized_json = orjson.dumps(
+        {**ergs, **configs},
+        option=orjson.OPT_SERIALIZE_NUMPY
+        | orjson.OPT_INDENT_2
+        | orjson.OPT_APPEND_NEWLINE
+        | orjson.OPT_NON_STR_KEYS,
+    )
+
+    # need to handle stdout differently, since it expects text output
+    if settings.outputfd == sys.stdout:
+        settings.outputfd.write(serialized_json.decode("utf-8"))
+    else:
+        settings.outputfd.write(serialized_json)
 
     # Finalize and close
     if settings.output and settings.outputfd != sys.stdout:

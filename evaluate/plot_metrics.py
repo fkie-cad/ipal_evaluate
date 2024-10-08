@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 import argparse
-import gzip
-import json
 import logging
 import pathlib
 
 import matplotlib.pyplot as plt
 import numpy as np
+import orjson
 from matplotlib.patches import Circle, RegularPolygon
 from matplotlib.path import Path
 from matplotlib.projections import register_projection
@@ -16,6 +15,7 @@ from matplotlib.transforms import Affine2D
 
 import evaluate.settings as settings
 import metrics.utils as utils
+from evaluate.evaluate import open_file
 
 # NOTE this script assumes that metrics are normalized to [0,1] with 0 bad and 1 good
 # A collection of default metrics used for this plot
@@ -33,7 +33,7 @@ METRICS = [
 ]
 ALL = [m for metric in utils.get_all_metrics().values() for m in metric.defines()]
 
-# Indicate whether a metric needs to be inverted such tat 0 is bad and 1 is good
+# Indicate whether a metric needs to be inverted such that 0 is bad and 1 is good
 INVERT = [m._name for m in utils.get_all_metrics().values() if not m._higher_is_better]
 
 # Collection of colors for the IDSs
@@ -49,14 +49,6 @@ COLORS = [
     "#bcbd22",
     "#17becf",
 ]
-
-
-# Wrapper for hiding .gz files
-def open_file(filename, mode):
-    if filename.endswith(".gz"):
-        return gzip.open(filename, mode=mode, compresslevel=settings.compresslevel)
-    else:
-        return open(filename, mode=mode, buffering=1)
 
 
 # Initialize logger
@@ -149,7 +141,7 @@ def radar_factory(num_vars, frame="circle"):
             elif frame == "polygon":
                 return RegularPolygon((0.5, 0.5), num_vars, radius=0.5, edgecolor="k")
             else:
-                raise ValueError("Unknown value for 'frame': %s" % frame)
+                raise ValueError(f"Unknown value for 'frame': {frame}")
 
         def _gen_axes_spines(self):
             if frame == "circle":
@@ -170,7 +162,7 @@ def radar_factory(num_vars, frame="circle"):
                 )
                 return {"polar": spine}
             else:
-                raise ValueError("Unknown value for 'frame': %s" % frame)
+                raise ValueError(f"Unknown value for 'frame': {frame}")
 
     register_projection(RadarAxes)
     return theta
@@ -180,28 +172,24 @@ def load_data(files):
     data = []
 
     for file in files:
-        settings.logger.info("Processing {}".format(file))
+        settings.logger.info(f"Processing {file}")
 
-        with open_file(file, "r") as f:
-            js = json.loads(f.read())
+        with open_file(file, "rb") as f:
+            js = orjson.loads(f.read())
 
         metricdata = []
         for metric in METRICS:
             if metric not in js:
-                settings.logger.error(
-                    "Metric '{}' is missing in {}".format(metric, file)
-                )
+                settings.logger.error(f"Metric '{metric}' is missing in {file}")
                 metricdata.append(0)
 
             elif js[metric] is None:
-                settings.logger.error("Metric '{}' is None in {}".format(metric, file))
+                settings.logger.error(f"Metric '{metric}' is None in {file}")
                 metricdata.append(0)
 
-            elif not (0 <= js[metric] and js[metric] <= 1):
+            elif not (0 <= js[metric] <= 1):
                 settings.logger.error(
-                    "Metric '{}' malformed or not between [0,1] for {}".format(
-                        metric, file
-                    )
+                    f"Metric '{metric}' malformed or not between [0,1] for {file}"
                 )
                 metricdata.append(0)
 
@@ -245,7 +233,7 @@ def plot(ax, data, theta):
     ax.set_ylim([0, 1])
 
     spoke_labels = [
-        metric if metric not in INVERT else "1-{}".format(metric) for metric in METRICS
+        metric if metric not in INVERT else f"1-{metric}" for metric in METRICS
     ]
     ax.set_varlabels(spoke_labels)
 
@@ -268,10 +256,7 @@ def main():
     parser.add_argument(
         "--metrics",
         metavar="metrics",
-        help="comma-separated list of metrics to be plotted (Default: '{}') Possible metrics are: {}".format(
-            ",".join(METRICS),
-            ",".join(ALL),
-        ),
+        help=f"comma-separated list of metrics to be plotted (Default: '{','.join(METRICS)}') Possible metrics are: {','.join(ALL)}",
         required=False,
     )
 
@@ -312,6 +297,16 @@ def main():
         help="file to log to (Default: stderr)",
         required=False,
     )
+    parser.add_argument(
+        "--plot.size",
+        dest="plot_size",
+        metavar="INT",
+        default=None,
+        nargs=2,
+        type=int,
+        help="define the plot size in pixels",
+        required=False,
+    )
 
     # Version number
     parser.add_argument(
@@ -326,7 +321,16 @@ def main():
 
     # Plot
     theta = radar_factory(len(METRICS), frame="polygon")
-    _, ax = plt.subplots(1, subplot_kw=dict(projection="radar"))
+
+    if args.plot_size is None:
+        _, ax = plt.subplots(1, subplot_kw=dict(projection="radar"))
+    else:
+        # Change plot size
+        tup = tuple(args.plot_size)
+        px = 1 / plt.rcParams["figure.dpi"]
+        _, ax = plt.subplots(
+            1, subplot_kw=dict(projection="radar"), figsize=(tup[0] * px, tup[1] * px)
+        )
 
     data = load_data(args.results)
     plot(ax, data, theta)

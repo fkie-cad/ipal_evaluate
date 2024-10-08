@@ -1,18 +1,11 @@
 #!/usr/bin/env python3
 import argparse
-import gzip
-import json
-import sys
 from argparse import Namespace
-from typing import IO, Any, Dict, List
+from typing import Any, Dict, List
 
+import orjson
 
-# Wrapper for hiding .gz files
-def open_file(filename: str, mode: str, compresslevel: int) -> IO[str]:
-    if filename.endswith(".gz"):
-        return gzip.open(filename, mode=mode, compresslevel=compresslevel)
-    else:
-        return open(filename, mode=mode, buffering=1)
+from evaluate.evaluate import open_file
 
 
 def parse_args() -> Namespace:
@@ -36,8 +29,8 @@ def parse_args() -> Namespace:
         "--compresslevel",
         metavar="INT",
         type=int,
-        default=9,
-        help="set the gzip compress level (0 no compress, 1 fast/large, ..., 9 slow/tiny) (Default: 9)",
+        default=6,
+        help="set the gzip compress level (0 no compress, 1 fast/large, ..., 9 slow/tiny) (Default: 6)",
     )
 
     parser.add_argument(
@@ -61,7 +54,7 @@ def parse_args() -> Namespace:
         metavar="INT",
         type=int,
         required=True,
-        help="index of the column containg the IIDS classification output (index starts at 0)",
+        help="index of the column containing the IIDS classification output (index starts at 0)",
     )
 
     parser.add_argument(
@@ -140,16 +133,8 @@ def try_to_convert(val: str, t: type) -> Any:
 
 def main() -> None:
     args = parse_args()
-    input_fd = (
-        open_file(args.input[0], "rt", args.compresslevel)
-        if args.input[0] != "-"
-        else sys.stdin
-    )
-    output_fd = (
-        open_file(args.output[0], "wt", args.compresslevel)
-        if args.output[0] != "-"
-        else sys.stdout
-    )
+    input_fd = open_file(args.input[0], mode="rt", compresslevel=args.compresslevel)
+    output_fd = open_file(args.output[0], mode="wt", compresslevel=args.compresslevel)
 
     separator = args.separator
     index_ts = args.timestamp
@@ -228,8 +213,9 @@ def main() -> None:
                 attack_start = ipal["timestamp"]
 
             previous_timestamp = ipal["timestamp"]
-
-        output_fd.write(json.dumps(ipal) + "\n")
+        output_fd.write(
+            orjson.dumps(ipal, option=orjson.OPT_APPEND_NEWLINE).decode("utf-8")
+        )
 
     input_fd.close()
     output_fd.close()
@@ -241,9 +227,9 @@ def main() -> None:
                 "end": previous_timestamp,
             }
             attacks.append(attack_obj)
-        attacks_fd = open_file(args.attacks, "wt", args.compresslevel)
-        json.dump(attacks, attacks_fd, indent=4)
-        attacks_fd.close()
+
+        with open_file(args.attacks, mode="wt", compresslevel=args.compresslevel) as f:
+            f.write(orjson.dumps(attacks, option=orjson.OPT_INDENT_2).decode("utf-8"))
 
 
 if __name__ == "__main__":

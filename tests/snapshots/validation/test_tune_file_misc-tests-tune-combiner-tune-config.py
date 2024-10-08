@@ -4,24 +4,18 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-+---------------------------+----------+-------+---------------------------------------------------------------------+-------------+
-| Trial name                | status   | loc   | matrix                                                              |   threshold |
-|---------------------------+----------+-------+---------------------------------------------------------------------+-------------|
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
-+---------------------------+----------+-------+---------------------------------------------------------------------+-------------+
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
 
 
 ###IGNORE-LINE###
   Accuracy: 0.8329514684440742
-  Affiliation-F0.1: .nan
-  Affiliation-F0.5: .nan
-  Affiliation-F1: .nan
-  Affiliation-F10: .nan
-  Affiliation-F2: .nan
-  Affiliation-Precision: .nan
   Affiliation-Recall: 0.0
   BATADAL: 0.25
   BATADAL-CLF: 0.5
@@ -57,7 +51,7 @@ Using FIFO scheduling algorithm.
     alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
-    compresslevel: 9
+    compresslevel: 6
     eTaPR_delta: 0.0
     eTaPR_theta_p: 0.5
     eTaPR_theta_r: 0.01
@@ -98,14 +92,14 @@ Using FIFO scheduling algorithm.
       threshold: 0.7853585837137692
       use_scores: false
     combiner_config: config-combiner.json
-    compresslevel: 9
+    compresslevel: 6
     config: config-iids.json
     hostname: false
     idss:
       Exists:
-        _type: Exists
+        _type: ExistsIDS
         exclude: []
-        model-file: ../../models/Exists
+        model-file: Exists
         threshold: 10.0
       Gradient:
         _type: MinMax
@@ -117,7 +111,7 @@ Using FIFO scheduling algorithm.
           state;25, state;26, state;27, state;28, state;29, state;30, state;31, state;32,
           state;33, state;34, state;35, state;36, state;37, state;38, state;39, state;40,
           state;41]
-        model-file: ../../models/Gradient
+        model-file: Gradient
         preprocessors:
         - features: [state;1, state;2, state;3, state;4, state;5, state;6, state;7,
             state;8, state;9, state;10, state;11, state;12, state;13, state;14, state;15,
@@ -125,7 +119,7 @@ Using FIFO scheduling algorithm.
             state;24, state;25, state;26, state;27, state;28, state;29, state;30, state;31,
             state;32, state;33, state;34, state;35, state;36, state;37, state;38, state;39,
             state;40, state;41]
-          method: gradient
+          method: Gradient
         save-training: null
         threshold: 1.0
         trainon: 1.0
@@ -139,7 +133,7 @@ Using FIFO scheduling algorithm.
           state;25, state;26, state;27, state;28, state;29, state;30, state;31, state;32,
           state;33, state;34, state;35, state;36, state;37, state;38, state;39, state;40,
           state;41]
-        model-file: ../../models/MinMax
+        model-file: MinMax
         preprocessors: []
         save-training: null
         threshold: 1.0
@@ -182,13 +176,13 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   Accuracy: 0.9825036450739429
-  Affiliation-F0.1: 0.9978207310924933
-  Affiliation-F0.5: 0.9982215180400754
-  Affiliation-F1: 0.9988546653250138
-  Affiliation-F10: 0.9998907444896311
-  Affiliation-F2: 0.9994886162991214
-  Affiliation-Precision: 0.9977998655896965
-  Affiliation-Recall: 0.9999116975318421
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -224,7 +218,7 @@ Using FIFO scheduling algorithm.
     alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
-    compresslevel: 9
+    compresslevel: 6
     eTaPR_delta: 0.0
     eTaPR_theta_p: 0.5
     eTaPR_theta_r: 0.01
@@ -265,14 +259,14 @@ Using FIFO scheduling algorithm.
       threshold: 0.8018721775350193
       use_scores: false
     combiner_config: config-combiner.json
-    compresslevel: 9
+    compresslevel: 6
     config: config-iids.json
     hostname: false
     idss:
       Exists:
-        _type: Exists
+        _type: ExistsIDS
         exclude: []
-        model-file: ../../models/Exists
+        model-file: Exists
         threshold: 10.0
       Gradient:
         _type: MinMax
@@ -284,7 +278,7 @@ Using FIFO scheduling algorithm.
           state;25, state;26, state;27, state;28, state;29, state;30, state;31, state;32,
           state;33, state;34, state;35, state;36, state;37, state;38, state;39, state;40,
           state;41]
-        model-file: ../../models/Gradient
+        model-file: Gradient
         preprocessors:
         - features: [state;1, state;2, state;3, state;4, state;5, state;6, state;7,
             state;8, state;9, state;10, state;11, state;12, state;13, state;14, state;15,
@@ -292,7 +286,7 @@ Using FIFO scheduling algorithm.
             state;24, state;25, state;26, state;27, state;28, state;29, state;30, state;31,
             state;32, state;33, state;34, state;35, state;36, state;37, state;38, state;39,
             state;40, state;41]
-          method: gradient
+          method: Gradient
         save-training: null
         threshold: 1.0
         trainon: 1.0
@@ -306,7 +300,7 @@ Using FIFO scheduling algorithm.
           state;25, state;26, state;27, state;28, state;29, state;30, state;31, state;32,
           state;33, state;34, state;35, state;36, state;37, state;38, state;39, state;40,
           state;41]
-        model-file: ../../models/MinMax
+        model-file: MinMax
         preprocessors: []
         save-training: null
         threshold: 1.0
@@ -349,13 +343,13 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   Accuracy: 0.9825036450739429
-  Affiliation-F0.1: 0.9978207310924933
-  Affiliation-F0.5: 0.9982215180400754
-  Affiliation-F1: 0.9988546653250138
-  Affiliation-F10: 0.9998907444896311
-  Affiliation-F2: 0.9994886162991214
-  Affiliation-Precision: 0.9977998655896965
-  Affiliation-Recall: 0.9999116975318421
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -391,7 +385,7 @@ Using FIFO scheduling algorithm.
     alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
-    compresslevel: 9
+    compresslevel: 6
     eTaPR_delta: 0.0
     eTaPR_theta_p: 0.5
     eTaPR_theta_r: 0.01
@@ -432,14 +426,14 @@ Using FIFO scheduling algorithm.
       threshold: 0.5009951255234587
       use_scores: false
     combiner_config: config-combiner.json
-    compresslevel: 9
+    compresslevel: 6
     config: config-iids.json
     hostname: false
     idss:
       Exists:
-        _type: Exists
+        _type: ExistsIDS
         exclude: []
-        model-file: ../../models/Exists
+        model-file: Exists
         threshold: 10.0
       Gradient:
         _type: MinMax
@@ -451,7 +445,7 @@ Using FIFO scheduling algorithm.
           state;25, state;26, state;27, state;28, state;29, state;30, state;31, state;32,
           state;33, state;34, state;35, state;36, state;37, state;38, state;39, state;40,
           state;41]
-        model-file: ../../models/Gradient
+        model-file: Gradient
         preprocessors:
         - features: [state;1, state;2, state;3, state;4, state;5, state;6, state;7,
             state;8, state;9, state;10, state;11, state;12, state;13, state;14, state;15,
@@ -459,7 +453,7 @@ Using FIFO scheduling algorithm.
             state;24, state;25, state;26, state;27, state;28, state;29, state;30, state;31,
             state;32, state;33, state;34, state;35, state;36, state;37, state;38, state;39,
             state;40, state;41]
-          method: gradient
+          method: Gradient
         save-training: null
         threshold: 1.0
         trainon: 1.0
@@ -473,7 +467,7 @@ Using FIFO scheduling algorithm.
           state;25, state;26, state;27, state;28, state;29, state;30, state;31, state;32,
           state;33, state;34, state;35, state;36, state;37, state;38, state;39, state;40,
           state;41]
-        model-file: ../../models/MinMax
+        model-file: MinMax
         preprocessors: []
         save-training: null
         threshold: 1.0
@@ -516,13 +510,13 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
   Accuracy: 0.9825036450739429
-  Affiliation-F0.1: 0.9978207310924933
-  Affiliation-F0.5: 0.9982215180400754
-  Affiliation-F1: 0.9988546653250138
-  Affiliation-F10: 0.9998907444896311
-  Affiliation-F2: 0.9994886162991214
-  Affiliation-Precision: 0.9977998655896965
-  Affiliation-Recall: 0.9999116975318421
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
+###IGNORE-LINE###
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -558,7 +552,7 @@ Using FIFO scheduling algorithm.
     alarm_gracetime: 0
 ###IGNORE-LINE###
     batadal_gamma: 0.5
-    compresslevel: 9
+    compresslevel: 6
     eTaPR_delta: 0.0
     eTaPR_theta_p: 0.5
     eTaPR_theta_r: 0.01
@@ -599,14 +593,14 @@ Using FIFO scheduling algorithm.
       threshold: 0.5611961860656249
       use_scores: false
     combiner_config: config-combiner.json
-    compresslevel: 9
+    compresslevel: 6
     config: config-iids.json
     hostname: false
     idss:
       Exists:
-        _type: Exists
+        _type: ExistsIDS
         exclude: []
-        model-file: ../../models/Exists
+        model-file: Exists
         threshold: 10.0
       Gradient:
         _type: MinMax
@@ -618,7 +612,7 @@ Using FIFO scheduling algorithm.
           state;25, state;26, state;27, state;28, state;29, state;30, state;31, state;32,
           state;33, state;34, state;35, state;36, state;37, state;38, state;39, state;40,
           state;41]
-        model-file: ../../models/Gradient
+        model-file: Gradient
         preprocessors:
         - features: [state;1, state;2, state;3, state;4, state;5, state;6, state;7,
             state;8, state;9, state;10, state;11, state;12, state;13, state;14, state;15,
@@ -626,7 +620,7 @@ Using FIFO scheduling algorithm.
             state;24, state;25, state;26, state;27, state;28, state;29, state;30, state;31,
             state;32, state;33, state;34, state;35, state;36, state;37, state;38, state;39,
             state;40, state;41]
-          method: gradient
+          method: Gradient
         save-training: null
         threshold: 1.0
         trainon: 1.0
@@ -640,7 +634,7 @@ Using FIFO scheduling algorithm.
           state;25, state;26, state;27, state;28, state;29, state;30, state;31, state;32,
           state;33, state;34, state;35, state;36, state;37, state;38, state;39, state;40,
           state;41]
-        model-file: ../../models/MinMax
+        model-file: MinMax
         preprocessors: []
         save-training: null
         threshold: 1.0

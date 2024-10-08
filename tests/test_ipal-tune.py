@@ -1,14 +1,22 @@
 import pytest
 
-from .conftest import check_with_validation_file, tune
+from .conftest import check_command_output, check_with_validation_file, tune
 
 
 def test_tune_empty():
-    errno, stdout, stderr = tune([])
 
-    assert errno == 1
-    assert stdout == b""
-    assert b"ERROR:ipal-tune" in stderr
+    args = []
+    errno, stdout, stderr = tune(args)
+
+    check_command_output(
+        returncode=errno,
+        args=args,
+        stdout=stdout,
+        stderr=stderr,
+        expectedcode=1,
+        expected_stderr=[r"ERROR:ipal\-tune"],  # only checks if that string shows up
+        expected_stdout=[b""],
+    )
 
 
 TESTFILES = [
@@ -25,19 +33,26 @@ TESTFILES = [
 
 @pytest.mark.parametrize("file", TESTFILES)
 def test_tune_file(file):
-    errno, stdout, stderr = tune(
-        [
-            "--config",
-            file,
-            "--restart-experiment",
-            "--max-cpus",
-            "1",
-        ]
+
+    args = [
+        "--config",
+        file,
+        "--restart-experiment",
+        "--max-cpus",
+        "1",
+    ]
+
+    errno, stdout, stderr = tune(args)
+
+    check_command_output(
+        returncode=errno,
+        args=args,
+        stdout=stdout,
+        stderr=stderr,
+        expectedcode=0,
+        check_for=["ERROR"],  # check if an IPAL error appears
     )
 
-    print(stderr.decode("utf-8"))
-
-    assert errno == 0
     check_with_validation_file(
         file.replace("/", "-"), stdout.decode("utf-8"), test_tune_file.__name__
     )

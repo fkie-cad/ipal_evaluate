@@ -8,7 +8,7 @@ from .metric import Metric
 
 class Nab(Metric):
     _name = "nab-score"
-    _description = "The NAB score weighs the evaluation of classification results based on their relative position to attack scenarios. Rewards (for true positives) and penalities (for false positives) are scaled by the sigmoid function centered around the end of attack windows. This ensures that early detections are rewarded, while trailing false positives are only gradually penalized."
+    _description = "The NAB score weighs the evaluation of classification results based on their relative position to attack scenarios. Rewards (for true positives) and penalties (for false positives) are scaled by the sigmoid function centered around the end of attack windows. This ensures that early detections are rewarded, while trailing false positives are only gradually penalized."
     _requires = ["Detected-Scenarios"]
     _requires_timed_dataset = True
     _higher_is_better = True
@@ -67,7 +67,7 @@ class Nab(Metric):
                     a_index += 1
 
                 if a_index < 0:
-                    # no attack before the alarm, scored as false positive with maximal penality
+                    # no attack before the alarm, scored as false positive with maximal penalty
                     for name, profile in profiles.items():
                         scores[name]["raw"] += profile["nab_afp"]
                     a_index = 0
@@ -94,7 +94,7 @@ class Nab(Metric):
                     for name, profile in profiles.items():
                         scores[name]["raw"] += score * profile["nab_atp"]
                 else:
-                    # false positive: sigmoidally increasing penality for missing the attack
+                    # false positive: sigmoidally increasing penalty for missing the attack
                     score = abs(cls._sigma(rel_pos))
                     for name, profile in profiles.items():
                         scores[name]["raw"] += score * profile["nab_afp"]

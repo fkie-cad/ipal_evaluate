@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 import argparse
-import gzip
-import json
 import logging
-import sys
 from pathlib import Path
 
 import matplotlib
 import matplotlib.pyplot as plt
+import orjson
 
 import evaluate.settings as settings
+from evaluate.evaluate import open_file
 
 IDSs = []
 ATTACKFILE = None
@@ -20,23 +19,13 @@ MIN_WIDTH = 0
 MARKEDATTACKS = []
 
 
-# Wrapper for hiding .gz files
-def open_file(filename, mode):
-    if filename.endswith(".gz"):
-        return gzip.open(filename, mode=mode, compresslevel=settings.compresslevel)
-    elif filename == "-":
-        return sys.stdin
-    else:
-        return open(filename, mode=mode, buffering=1)
-
-
 # Initialize logger
 def initialize_logger(args):
     if args.log:
         settings.log = getattr(logging, args.log.upper(), None)
 
         if not isinstance(settings.log, int):
-            logging.getLogger("ipal-ploat-alerts").error(
+            logging.getLogger("ipal-plot-alerts").error(
                 "Option '--log' parameter not found"
             )
             exit(1)
@@ -66,7 +55,7 @@ def get_score(js):
     elif SCORE == "default":
         if len(js["scores"]) != 1:
             settings.logger.error(
-                "--score 'default' was provided but multiple IIDSs are present!"
+                "--draw-score 'default' was provided but multiple IIDSs are present!"
             )
             settings.logger.error(
                 "Use any of {} instead".format(
@@ -80,7 +69,7 @@ def get_score(js):
     else:
         if SCORE not in js["scores"] and LAST_SCORE is None:
             settings.logger.error(
-                "--score '{}' was provided but no such IIDS was found!".format(SCORE)
+                f"--draw-score '{SCORE}' was provided but no such IIDS was found!"
             )
             settings.logger.error(
                 "Use any of {} instead".format(
@@ -91,9 +80,7 @@ def get_score(js):
 
         if SCORE not in js["scores"] and LAST_SCORE is not None:
             settings.logger.error(
-                "--score '{}' was provided but is not present in all lines!".format(
-                    SCORE
-                )
+                f"--draw-score '{SCORE}' was provided but is not present in all lines!"
             )
             return LAST_SCORE
 
@@ -128,18 +115,16 @@ def plot(  # noqa: C901
         ATTACK_START = None
         excess = 0
 
-        settings.logger.info(
-            "Processing: {} ({}/{})".format(label, -count + 1, len(IDSs))
-        )
+        settings.logger.info(f"Processing: {label} ({-count + 1}/{len(IDSs)})")
 
         try:  # load file into memory
-            with open_file(IDS, "r") as f:
+            with open_file(IDS, "rb") as f:
                 last_timestamp = None
                 last_relative_time = None
                 line = f.readline()
 
                 while line:
-                    js = json.loads(line)
+                    js = orjson.loads(line)
                     t = js["timestamp"]
 
                     # Collect ipalIDs
@@ -157,23 +142,23 @@ def plot(  # noqa: C901
                         )
                         settings.logger.info(f"Skipped Gap of {delta}")
 
-                    relativ_time = js["timestamp"] - START
+                    relative_time = js["timestamp"] - START
                     for gap in gaps:
-                        relativ_time -= gap[1]
+                        relative_time -= gap[1]
                     if last_relative_time is None:
-                        last_relative_time = relativ_time
+                        last_relative_time = relative_time
 
                     # enlarge attacks a tiny bit
-                    excess -= relativ_time - last_relative_time
+                    excess -= relative_time - last_relative_time
                     if ATTACK_START is None and js["ids"]:
-                        ATTACK_START = relativ_time
+                        ATTACK_START = relative_time
                     elif ATTACK_START is not None and not js["ids"]:
-                        if relativ_time - ATTACK_START < MIN_WIDTH:
-                            excess = MIN_WIDTH - (relativ_time - ATTACK_START)
+                        if relative_time - ATTACK_START < MIN_WIDTH:
+                            excess = MIN_WIDTH - (relative_time - ATTACK_START)
                             settings.logger.info(f"Enlarging attack by {excess}")
                         ATTACK_START = None
 
-                    T.append(relativ_time)
+                    T.append(relative_time)
                     ALERT.append(js["ids"] or excess > 0)
                     if mark_fp:
                         FALSE_ALERT.append(
@@ -183,11 +168,11 @@ def plot(  # noqa: C901
                     SCORES.append(get_score(js))
 
                     last_timestamp = t
-                    last_relative_time = relativ_time
+                    last_relative_time = relative_time
 
                     line = f.readline()
 
-        except EOFError:  # allow draing incomplete files
+        except EOFError:  # allow drawing incomplete files
             settings.logger.warning(
                 "File not closed properly! Some data is still missing!\n"
             )
@@ -244,8 +229,8 @@ def plot(  # noqa: C901
     ATTACKS = []
 
     if ATTACKFILE is not None:
-        with open_file(ATTACKFILE, "r") as f:
-            for attack in json.load(f):
+        with open_file(ATTACKFILE, "rb") as f:
+            for attack in orjson.loads(f.read()):
                 # Draw attack ticks
                 if draw_ticks and "ipalid" in attack:
                     if attack["ipalid"] in ipalidtotimestamp:
@@ -329,7 +314,7 @@ def plot(  # noqa: C901
     Nticks = 10
     ticksEvery = end // 3600 / Nticks
     ax.set_xticks([ticksEvery * 3600 * i for i in range(Nticks * 2)])
-    ax.set_xticklabels(["%.1f" % (ticksEvery * i) for i in range(Nticks * 2)])
+    ax.set_xticklabels([f"{ticksEvery * i:.1f}" for i in range(Nticks * 2)])
     ax.set_xlim(0, end)
 
     ax.set_ylabel(DATASETNAME, fontweight=1000, fontsize="x-large", labelpad=5)
@@ -460,6 +445,17 @@ def main():
         "--version", action="version", version=f"%(prog)s {settings.version}"
     )
 
+    parser.add_argument(
+        "--plot.size",
+        dest="plot_size",
+        metavar="INT",
+        default=None,
+        nargs=2,
+        type=int,
+        help="define the plot size in pixels",
+        required=False,
+    )
+
     args = parser.parse_args()
     initialize_logger(args)
 
@@ -490,7 +486,13 @@ def main():
         MARKEDATTACKS = args.mark_attacks.split(",")
 
     # Plot
-    _, ax = plt.subplots(1)
+    if args.plot_size is None:
+        _, ax = plt.subplots(1)
+    else:
+        # Change plot size
+        tup = tuple(args.plot_size)
+        px = 1 / plt.rcParams["figure.dpi"]
+        _, ax = plt.subplots(1, figsize=(tup[0] * px, tup[1] * px))
 
     plt.xlabel("Elapsed Time [hours]")
     plot(

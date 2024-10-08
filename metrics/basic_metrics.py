@@ -256,7 +256,7 @@ class FScore(Metric):
 
     @classmethod
     def defines(cls):
-        return ["F{}".format(beta) for beta in settings.fscore_betas]
+        return [f"F{beta}" for beta in settings.fscore_betas]
 
     @classmethod
     def calculate(
@@ -292,6 +292,6 @@ class FScore(Metric):
             else:
                 raise ValueError(f"Invalid {beta=}")
 
-            result["F{}".format(beta)] = score
+            result[f"F{beta}"] = score
 
         return result

@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 import enum
-import gzip
-import json
 import os
 import subprocess
-import sys
 import time
 
+import orjson
 from ray import tune
 
 import evaluate.settings as settings
+from evaluate.evaluate import open_file
 
 
 class RunStatus(str, enum.Enum):
@@ -22,24 +21,22 @@ class RunStatus(str, enum.Enum):
 
 class IidsTrainable(tune.Trainable):
     # Wrapper for hiding .gz files
-    def _open_file(self, filename, mode):
-        if filename is None:
-            return None
-        elif filename.endswith(".gz"):
-            return gzip.open(filename, mode=mode, compresslevel=settings.compresslevel)
-        elif filename == "-":
-            return sys.stdin
-        else:
-            return open(filename, mode=mode, buffering=1)
+    def _open_file(self, filename, mode: str, force_gzip: bool = False):
+        return open_file(filename, mode, force_gzip=force_gzip)
 
     def _save_status(self):
+
         with self._open_file(self.status_file, "w") as f:
-            json.dump(self.status, f, indent=4)
+            f.write(
+                orjson.dumps(self.status, option=orjson.OPT_INDENT_2).decode("utf-8")
+            )
 
         with self._open_file(self.runtime_file, "w") as f:
-            json.dump(self.runtime, f, indent=4)
+            f.write(
+                orjson.dumps(self.runtime, option=orjson.OPT_INDENT_2).decode("utf-8")
+            )
 
-    def _run_substep(self, substep_name: str, cmd: str) -> int:
+    def _run_substep(self, substep_name: str, cmd: str) -> int | None:
         # Executes a command and keeps track of its success status
 
         # Status management
@@ -58,7 +55,7 @@ class IidsTrainable(tune.Trainable):
 
         start_time = time.time()
 
-        process = subprocess.run("exec " + cmd, capture_output=True, shell=True)
+        process = subprocess.run(f"exec {cmd}", capture_output=True, shell=True)
         end_time = time.time()
 
         # Status management
@@ -81,7 +78,7 @@ class IidsTrainable(tune.Trainable):
         with self._open_file(self.output_file, "wt") as fout:
             for testfile in self.settings["test_files"]:
                 with self._open_file(os.path.basename(testfile), "rt") as fin:
-                    fout.writelines(fin.readlines())
+                    fout.write(fin.read())
 
         self.runtime["merging"] += time.time() - t1
         self.status["merging"] = RunStatus.SUCCESS
@@ -182,15 +179,21 @@ class IidsTrainable(tune.Trainable):
         self.runtime_file = "runtime.json"
 
         # Write config files
-        with self._open_file(self.config_iids, "w") as f:
-            json.dump(config["iids"], f, indent=4)
-        with self._open_file(self.config_combiner, "w") as f:
-            json.dump(config["combiner"], f, indent=4)
+        with self._open_file(self.config_iids, "wt") as f:
+            f.write(
+                orjson.dumps(config["iids"], option=orjson.OPT_INDENT_2).decode("utf-8")
+            )
+        with self._open_file(self.config_combiner, "wt") as f:
+            f.write(
+                orjson.dumps(config["combiner"], option=orjson.OPT_INDENT_2).decode(
+                    "utf-8"
+                )
+            )
 
         # Initiate status
         if os.path.exists(self.status_file):
-            with self._open_file(self.status_file, "r") as f:
-                self.status = json.load(f)
+            with self._open_file(self.status_file, "rb") as f:
+                self.status = orjson.loads(f.read())
             self.status = {k: RunStatus(v) for k, v in self.status.items()}
         else:
             self.status = {
@@ -205,8 +208,8 @@ class IidsTrainable(tune.Trainable):
 
         # Initiate runtime
         if os.path.exists(self.runtime_file):
-            with self._open_file(self.runtime_file, "r") as f:
-                self.runtime = json.load(f)
+            with self._open_file(self.runtime_file, "rb") as f:
+                self.runtime = orjson.loads(f.read())
         else:
             self.runtime = {
                 "train": 0,
@@ -224,8 +227,8 @@ class IidsTrainable(tune.Trainable):
             self._compute()
 
         # Read results from file
-        with open(self.evaluate_file, "r") as f:
-            return json.load(f)
+        with self._open_file(self.evaluate_file, "rb") as f:
+            return orjson.loads(f.read())
 
     def cleanup(self):
         self._save_status()

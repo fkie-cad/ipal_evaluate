@@ -1,0 +1,5 @@
+#!/usr/bin/env python3
+from evaluate import add_attacks
+
+if __name__ == "__main__":
+    add_attacks.main()

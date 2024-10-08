@@ -2,7 +2,12 @@ from itertools import product
 
 import pytest
 
-from .conftest import calculate_and_create_paths, check_with_validation_file, csvtoipal
+from .conftest import (
+    calculate_and_create_paths,
+    check_command_output,
+    check_with_validation_file,
+    csv_to_ipal,
+)
 
 
 @pytest.mark.parametrize(
@@ -26,31 +31,30 @@ def test_csv_to_ipal(separator: str, quote: str, line_end: str) -> None:
     attack_file, _ = calculate_and_create_paths(
         "attacks.json", test_csv_to_ipal.__name__
     )
-    errno, stdout, _ = csvtoipal(
-        [
-            "-",
-            "-",
-            "--separator",
-            f"{separator}",
-            "--timestamp",
-            "0",
-            "--groundtruth",
-            "4",
-            "--ids",
-            "5",
-            "--scores",
-            "Gradient:6,Histogram:7,MinMax:8,:9",
-            "--attacks",
-            f"{attack_file}",
-            "--skip",
-            "2",
-            "--header",
-            "1",
-        ],
-        bytes(csv, "UTF-8"),
+    args = [
+        "-",
+        "-",
+        "--separator",
+        f"{separator}",
+        "--timestamp",
+        "0",
+        "--groundtruth",
+        "4",
+        "--ids",
+        "5",
+        "--scores",
+        "Gradient:6,Histogram:7,MinMax:8,:9",
+        "--attacks",
+        f"{attack_file}",
+        "--skip",
+        "2",
+        "--header",
+        "1",
+    ]
+    errno, stdout, stderr = csv_to_ipal(args, bytes(csv, "UTF-8"))
+    check_command_output(
+        errno, args, stdout, stderr, expectedcode=0, check_for=["ERROR"]
     )
-
-    assert errno == 0
     raw_attacks = open(attack_file, "rt").read()
     check_with_validation_file(
         "output.state.json",
