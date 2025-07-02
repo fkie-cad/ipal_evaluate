@@ -46,7 +46,6 @@ LAST_SCORE = None
 
 
 def get_score(js):
-    global SCORE
     global LAST_SCORE
 
     if SCORE is None:
@@ -97,10 +96,15 @@ def normalize_scores(scores):  # normalize min/max to 0 1
 def plot(  # noqa: C901
     ax, draw_ticks=False, plot_attack_ids=True, mark_fp=True, mark_skip=False
 ):  # noqa: C901
-    global IDSs, ATTACKFILE, DATASETNAME, GAPTIME, SCORE, MIN_WIDTH, MARKEDATTACKS
-
     count = 1
     ipalidtotimestamp = {}
+
+    with open_file(ATTACKFILE, "rb") as f:
+        attacks = orjson.loads(f.read())
+
+    START = None
+    END = None
+    gaps = []
 
     # PLOT IDS ALARMS
     for IDS, label in IDSs:
@@ -222,69 +226,91 @@ def plot(  # noqa: C901
         if mark_skip:
             ax.scatter(SKIPS, [count - 0.5] * len(SKIPS), marker="1", color="grey")
 
-    END = js["timestamp"]
+    if START is not None:
+        END = js["timestamp"]
+
+    else:  # We did not get an IDS file.
+        # Thus estimate start and end from attacks
+        START = attacks[0]["start"]
+        END = attacks[-1]["end"]
 
     # PLOT ATTACKS
     settings.logger.info("Processing attacks")
     ATTACKS = []
 
     if ATTACKFILE is not None:
-        with open_file(ATTACKFILE, "rb") as f:
-            for attack in orjson.loads(f.read()):
-                # Draw attack ticks
-                if draw_ticks and "ipalid" in attack:
-                    if attack["ipalid"] in ipalidtotimestamp:
-                        start = ipalidtotimestamp[attack["ipalid"]] - START
-                        for gap in gaps:
-                            if ipalidtotimestamp[attack["ipalid"]] - START > gap[0]:
-                                start -= gap[1]
-
-                        ATTACKS.append((start, str(attack["id"]) in MARKEDATTACKS))
-
-                        if plot_attack_ids:
-                            ax.annotate(
-                                attack["id"], (start, 0.5), ha="center", va="center"
-                            )
-                    else:
-                        settings.logger.warning(
-                            f"IPAL ID {attack['ipalid']} from attack not found in dataset"
-                        )
-
-                # Draw attack ranges
-                elif "start" in attack and "end" in attack:
-                    start = attack["start"] - START
-                    end = attack["end"] - START
-
+        for attack in attacks:
+            # Draw attack ticks
+            if draw_ticks and "ipalid" in attack:
+                # NOTE no support for drawing recovery phases here
+                if attack["ipalid"] in ipalidtotimestamp:
+                    start = ipalidtotimestamp[attack["ipalid"]] - START
                     for gap in gaps:
-                        if attack["start"] - START > gap[0]:
+                        if ipalidtotimestamp[attack["ipalid"]] - START > gap[0]:
                             start -= gap[1]
-                            end -= gap[1]
 
-                    borders = (start, end)
+                    ATTACKS.append((start, str(attack["id"]) in MARKEDATTACKS))
 
+                    if plot_attack_ids:
+                        ax.annotate(
+                            attack["id"], (start, 0.5), ha="center", va="center"
+                        )
+                else:
+                    settings.logger.warning(
+                        f"IPAL ID {attack['ipalid']} from attack not found in dataset"
+                    )
+
+            # Draw attack ranges
+            elif "start" in attack and "end" in attack:
+                start = attack["start"] - START
+                end = attack["end"] - START
+                recovery = attack["recovery"] - START if "recovery" in attack else None
+
+                for gap in gaps:
+                    # NOTE we assume no gaps during an attack
+                    if attack["start"] - START > gap[0]:
+                        start -= gap[1]
+                        end -= gap[1]
+                        if recovery:
+                            recovery -= gap[1]
+
+                rect = matplotlib.patches.Rectangle(
+                    (start, 0),
+                    end - start,
+                    1,
+                    color=(
+                        "#510ac9" if str(attack["id"]) in MARKEDATTACKS else "#a50303"
+                    ),
+                    linewidth=0,
+                )
+                ax.add_patch(rect)
+
+                if "id" in attack and plot_attack_ids:
+                    rx, ry = rect.get_xy()
+                    cx = rx + rect.get_width() / 2.0
+                    cy = ry + rect.get_height() / 2.0
+                    ax.annotate(attack["id"], (cx, cy), ha="center", va="center")
+
+                if recovery:  # Draw recovery phase in different color
                     rect = matplotlib.patches.Rectangle(
-                        (borders[0], 0),
-                        borders[1] - borders[0],
+                        (end, 0),
+                        recovery - end,
                         1,
                         color=(
                             "#510ac9"
                             if str(attack["id"]) in MARKEDATTACKS
                             else "#a50303"
                         ),
-                        linewidth=0,
+                        fill=None,
+                        linewidth=1,
+                        linestyle="dashed",
                     )
                     ax.add_patch(rect)
 
-                    if "id" in attack and plot_attack_ids:
-                        rx, ry = rect.get_xy()
-                        cx = rx + rect.get_width() / 2.0
-                        cy = ry + rect.get_height() / 2.0
-                        ax.annotate(attack["id"], (cx, cy), ha="center", va="center")
-
-                else:
-                    settings.logger.warning(
-                        f"Attack {attack['ipalid']} ignored! Try again with `--draw-ticks`"
-                    )
+            else:
+                settings.logger.warning(
+                    f"Attack {attack['ipalid']} ignored! Try again with `--draw-ticks`"
+                )
 
         if draw_ticks:
             ax.scatter(
@@ -420,7 +446,7 @@ def main():
     )
 
     parser.add_argument(
-        "IDSs", metavar="IDS", nargs="+", help="IDS classification files"
+        "IDSs", metavar="IDS", nargs="*", help="IDS classification files"
     )
 
     # Logging
@@ -458,6 +484,12 @@ def main():
 
     args = parser.parse_args()
     initialize_logger(args)
+
+    if len(args.IDSs) == 0 and not args.attacks:
+        settings.logger.error(
+            "Provide at least either an IDS output file or an attacks file!"
+        )
+        exit(1)
 
     IDSs = [
         (

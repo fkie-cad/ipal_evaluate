@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="ipal-evaluate",
-    version="1.3.1",
+    version="1.3.2",
     packages=find_packages(exclude="tests"),
     scripts=[
         "ipal-evaluate",

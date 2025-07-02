@@ -91,6 +91,7 @@
     },
     "Penalty-Score": 19624,
     "Detection-Delay": 2217,
+    "Average-Time-to-Detection": 82.11111111111111,
     "TPA": 26,
     "FPA": 23,
     "eTaR": 0.47172599945717664,

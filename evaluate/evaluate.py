@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import json
 import logging
 import sys
 import traceback
@@ -7,7 +8,6 @@ from os import PathLike
 from pathlib import Path
 from typing import IO, Any, Dict, List
 
-import orjson
 from zlib_ng import gzip_ng_threaded as gzip
 
 import evaluate.settings as settings
@@ -290,7 +290,7 @@ def main():
     if args.attacks:
         settings.logger.info(f"Loading attacks from {settings.attacks}")
         with open_file(settings.attacks, "rb") as f:
-            attacks = orjson.loads(f.read())
+            attacks = json.loads(f.read())
 
     else:
         settings.logger.warning("No attack file provided! Some metrics may be skipped")
@@ -308,7 +308,7 @@ def main():
     _first = True
 
     for line in settings.inputfd:
-        js = orjson.loads(line)
+        js = json.loads(line)
 
         if _first:  # Forward transcriber/ipal_iids parameters
             configs = {k: v for k, v in js.items() if k.startswith("_")}
@@ -344,19 +344,13 @@ def main():
 
     # 5) json export
     settings.logger.info(f"Writing evaluation files to {settings.output}")
-    serialized_json = orjson.dumps(
-        {**ergs, **configs},
-        option=orjson.OPT_SERIALIZE_NUMPY
-        | orjson.OPT_INDENT_2
-        | orjson.OPT_APPEND_NEWLINE
-        | orjson.OPT_NON_STR_KEYS,
-    )
+    serialized_json = json.dumps({**ergs, **configs}, indent=4)
 
     # need to handle stdout differently, since it expects text output
     if settings.outputfd == sys.stdout:
-        settings.outputfd.write(serialized_json.decode("utf-8"))
-    else:
         settings.outputfd.write(serialized_json)
+    else:
+        settings.outputfd.write(serialized_json.encode("utf-8"))
 
     # Finalize and close
     if settings.output and settings.outputfd != sys.stdout:

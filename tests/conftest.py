@@ -4,8 +4,10 @@ import json
 import math
 import re
 from pathlib import Path
-from subprocess import PIPE, Popen
+from subprocess import PIPE, Popen, call
 from typing import List, Optional, Tuple, Union
+
+import pytest
 
 # Exclude output paths
 collect_ignore = ["snapshots"]
@@ -14,6 +16,26 @@ EVALUATE = "./ipal-evaluate"
 TUNE = "./ipal-tune"
 ADD_ATTACKS = "./ipal-add-attacks"
 CSVTOIPAL = "./misc/csv-to-ipal.py"
+
+
+def check_is_transcriber_installed():
+    try:
+        call(["ipal-transcriber", "-h"])
+
+    except FileNotFoundError:
+        pytest.skip(
+            "IPAL Transcriber is not installed. Follow instructions on https://github.com/fkie-cad/ipal_transcriber."
+        )
+
+
+def check_is_ipal_ids_installed():
+    try:
+        call(["ipal-iids", "-h"])
+
+    except FileNotFoundError:
+        pytest.skip(
+            "IPAL IDS Framework is not installed. Follow instructions on https://github.com/fkie-cad/ipal_ids_framework."
+        )
 
 
 ########################

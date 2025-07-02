@@ -1,9 +1,9 @@
-{"timestamp": 1451293200, "PUMP_A": 1, "VALVE_A": "OPEN", "VALVE_B": 0.01, "malicious": true, "ids": true, "scores": {"Gradient": 21.0, "Histogram": 0.0, "MinMax": 0.0, "Steadytime": 0.0}}
-{"timestamp": 1451293201, "PUMP_A": 1, "VALVE_A": "OPEN", "VALVE_B": 0.01, "malicious": false, "ids": true, "scores": {"Gradient": 12.0, "Histogram": -1.0, "MinMax": 0.0, "Steadytime": 0.0}}
-{"timestamp": 1451293202, "PUMP_A": 0, "VALVE_A": "CLOSED", "VALVE_B": -0.14985, "malicious": false, "ids": false, "scores": {"Gradient": 0.0, "Histogram": -1.0, "MinMax": 0.0, "Steadytime": -3e-05}}
-{"timestamp": 1451293203, "PUMP_A": 0, "VALVE_A": "CLOSED", "VALVE_B": 0.324368, "malicious": true, "ids": false, "scores": {"Gradient": 0.0, "Histogram": 1.0, "MinMax": 0.0, "Steadytime": 0.0}}
-{"timestamp": 1451293204, "PUMP_A": 0, "VALVE_A": "OPEN", "VALVE_B": 0.57523, "malicious": true, "ids": false, "scores": {"Gradient": 0.0, "Histogram": -1.0, "MinMax": 0.0, "Steadytime": 0.0}}
-{"timestamp": 1451293205, "PUMP_A": 1, "VALVE_A": "OPEN", "VALVE_B": 0.58942, "malicious": true, "ids": true, "scores": {"Gradient": 32.0, "Histogram": -1.0, "MinMax": 0.0, "Steadytime": 3.33}}
-{"timestamp": 1451293206, "PUMP_A": 1, "VALVE_A": "CLOSED", "VALVE_B": -0.559348, "malicious": false, "ids": true, "scores": {"Gradient": 423.0, "Histogram": 0.0, "MinMax": 0.0, "Steadytime": 221.32}}
-{"timestamp": 1451293207, "PUMP_A": 1, "VALVE_A": "CLOSED", "VALVE_B": 0.5352, "malicious": true, "ids": true, "scores": {"Gradient": 5345.0, "Histogram": 0.0, "MinMax": 0.0, "Steadytime": 0.0}}
-{"timestamp": 1451293208, "PUMP_A": 0, "VALVE_A": "OPEN", "VALVE_B": 0.543123, "malicious": true, "ids": false, "scores": {"Gradient": 0.0, "Histogram": 0.0, "MinMax": 0.0, "Steadytime": 0.0}}
+{"timestamp":1451293200,"PUMP_A":1,"VALVE_A":"OPEN","VALVE_B":0.01,"malicious":true,"ids":true,"scores":{"Gradient":21.0,"Histogram":0.0,"MinMax":0.0,"Steadytime":0.0}}
+{"timestamp":1451293201,"PUMP_A":1,"VALVE_A":"OPEN","VALVE_B":0.01,"malicious":false,"ids":true,"scores":{"Gradient":12.0,"Histogram":-1.0,"MinMax":0.0,"Steadytime":0.0}}
+{"timestamp":1451293202,"PUMP_A":0,"VALVE_A":"CLOSED","VALVE_B":-0.14985,"malicious":false,"ids":false,"scores":{"Gradient":0.0,"Histogram":-1.0,"MinMax":0.0,"Steadytime":-0.00003}}
+{"timestamp":1451293203,"PUMP_A":0,"VALVE_A":"CLOSED","VALVE_B":0.324368,"malicious":true,"ids":false,"scores":{"Gradient":0.0,"Histogram":1.0,"MinMax":0.0,"Steadytime":0.0}}
+{"timestamp":1451293204,"PUMP_A":0,"VALVE_A":"OPEN","VALVE_B":0.57523,"malicious":true,"ids":false,"scores":{"Gradient":0.0,"Histogram":-1.0,"MinMax":0.0,"Steadytime":0.0}}
+{"timestamp":1451293205,"PUMP_A":1,"VALVE_A":"OPEN","VALVE_B":0.58942,"malicious":true,"ids":true,"scores":{"Gradient":32.0,"Histogram":-1.0,"MinMax":0.0,"Steadytime":3.33}}
+{"timestamp":1451293206,"PUMP_A":1,"VALVE_A":"CLOSED","VALVE_B":-0.559348,"malicious":false,"ids":true,"scores":{"Gradient":423.0,"Histogram":0.0,"MinMax":0.0,"Steadytime":221.32}}
+{"timestamp":1451293207,"PUMP_A":1,"VALVE_A":"CLOSED","VALVE_B":0.5352,"malicious":true,"ids":true,"scores":{"Gradient":5345.0,"Histogram":0.0,"MinMax":0.0,"Steadytime":0.0}}
+{"timestamp":1451293208,"PUMP_A":0,"VALVE_A":"OPEN","VALVE_B":0.543123,"malicious":true,"ids":false,"scores":{"Gradient":0.0,"Histogram":0.0,"MinMax":0.0,"Steadytime":0.0}}

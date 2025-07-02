@@ -12,7 +12,8 @@ from tests.metrics.test_data import test_attacks, test_data
 def test_det_scenarios():
     ergs = DetectedScenarios.calculate(dataset=test_data, attacks=test_attacks)
 
-    expected = {"Detected-Scenarios": ["a", "b"]}
+    expected = {"Detected-Scenarios": sorted(["a", "b"])}
+    ergs["Detected-Scenarios"] = sorted(ergs["Detected-Scenarios"])
     TestCase().assertDictEqual(expected, ergs)
 
 

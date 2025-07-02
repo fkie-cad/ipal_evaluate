@@ -16,7 +16,14 @@ Using FIFO scheduling algorithm.
 
 ###IGNORE-LINE###
   Accuracy: 0.8329514684440742
+  Affiliation-F0.1: .nan
+  Affiliation-F0.5: .nan
+  Affiliation-F1: .nan
+  Affiliation-F10: .nan
+  Affiliation-F2: .nan
+  Affiliation-Precision: .nan
   Affiliation-Recall: 0.0
+  Average-Time-to-Detection: .nan
   BATADAL: 0.25
   BATADAL-CLF: 0.5
   BATADAL-TTD: 0.0
@@ -77,6 +84,8 @@ Using FIFO scheduling algorithm.
     timed_dataset: true
 ###IGNORE-LINE###
   _iids-config:
+    alerts: null
+    alerts_update: false
     combiner:
       _type: Matrix
       keys:
@@ -183,6 +192,7 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
+  Average-Time-to-Detection: 5.0
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -244,6 +254,8 @@ Using FIFO scheduling algorithm.
     timed_dataset: true
 ###IGNORE-LINE###
   _iids-config:
+    alerts: null
+    alerts_update: false
     combiner:
       _type: Matrix
       keys:
@@ -350,6 +362,7 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
+  Average-Time-to-Detection: 5.0
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -411,6 +424,8 @@ Using FIFO scheduling algorithm.
     timed_dataset: true
 ###IGNORE-LINE###
   _iids-config:
+    alerts: null
+    alerts_update: false
     combiner:
       _type: Matrix
       keys:
@@ -517,6 +532,7 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
+  Average-Time-to-Detection: 5.0
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -578,6 +594,8 @@ Using FIFO scheduling algorithm.
     timed_dataset: true
 ###IGNORE-LINE###
   _iids-config:
+    alerts: null
+    alerts_update: false
     combiner:
       _type: Matrix
       keys:

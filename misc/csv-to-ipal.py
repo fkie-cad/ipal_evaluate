@@ -213,9 +213,7 @@ def main() -> None:
                 attack_start = ipal["timestamp"]
 
             previous_timestamp = ipal["timestamp"]
-        output_fd.write(
-            orjson.dumps(ipal, option=orjson.OPT_APPEND_NEWLINE).decode("utf-8")
-        )
+        output_fd.write(orjson.dumps(ipal, option=orjson.OPT_APPEND_NEWLINE).decode("utf-8"))
 
     input_fd.close()
     output_fd.close()

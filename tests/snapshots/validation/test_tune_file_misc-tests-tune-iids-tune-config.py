@@ -23,6 +23,7 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
+  Average-Time-to-Detection: 5.0
   BATADAL: 0.9708168216388859
   BATADAL-CLF: 0.9478758405312051
   BATADAL-TTD: 0.9937578027465668
@@ -84,6 +85,8 @@ Using FIFO scheduling algorithm.
     timed_dataset: true
 ###IGNORE-LINE###
   _iids-config:
+    alerts: null
+    alerts_update: false
     combiner:
       _type: Any
       model-file: model-combiner
@@ -152,6 +155,7 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
+  Average-Time-to-Detection: 5.0
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -213,6 +217,8 @@ Using FIFO scheduling algorithm.
     timed_dataset: true
 ###IGNORE-LINE###
   _iids-config:
+    alerts: null
+    alerts_update: false
     combiner:
       _type: Any
       model-file: model-combiner
@@ -281,6 +287,7 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
+  Average-Time-to-Detection: 5.0
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -342,6 +349,8 @@ Using FIFO scheduling algorithm.
     timed_dataset: true
 ###IGNORE-LINE###
   _iids-config:
+    alerts: null
+    alerts_update: false
     combiner:
       _type: Any
       model-file: model-combiner
@@ -410,6 +419,7 @@ Using FIFO scheduling algorithm.
 ###IGNORE-LINE###
 ###IGNORE-LINE###
 ###IGNORE-LINE###
+  Average-Time-to-Detection: 5.0
   BATADAL: 0.9714419779279582
   BATADAL-CLF: 0.9491261531093497
   BATADAL-TTD: 0.9937578027465668
@@ -471,6 +481,8 @@ Using FIFO scheduling algorithm.
     timed_dataset: true
 ###IGNORE-LINE###
   _iids-config:
+    alerts: null
+    alerts_update: false
     combiner:
       _type: Any
       model-file: model-combiner

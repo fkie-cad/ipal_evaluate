@@ -213,8 +213,6 @@ def load_data(files):
 
 
 def plot(ax, data, theta):
-    global METRICS
-
     ax.set_rgrids([0.2, 0.4, 0.6, 0.8])
 
     # Plot each IDSs data

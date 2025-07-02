@@ -21,7 +21,7 @@ trialCounter = 0
 
 
 def trial_name_creator(name, experimentName=None):
-    global threadLock, trialCounter
+    global trialCounter
 
     with threadLock:
         n = trialCounter

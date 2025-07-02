@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import enum
+import json
 import os
 import subprocess
 import time
 
-import orjson
 from ray import tune
 
 import evaluate.settings as settings
@@ -27,14 +27,10 @@ class IidsTrainable(tune.Trainable):
     def _save_status(self):
 
         with self._open_file(self.status_file, "w") as f:
-            f.write(
-                orjson.dumps(self.status, option=orjson.OPT_INDENT_2).decode("utf-8")
-            )
+            f.write(json.dumps(self.status))
 
         with self._open_file(self.runtime_file, "w") as f:
-            f.write(
-                orjson.dumps(self.runtime, option=orjson.OPT_INDENT_2).decode("utf-8")
-            )
+            f.write(json.dumps(self.runtime))
 
     def _run_substep(self, substep_name: str, cmd: str) -> int | None:
         # Executes a command and keeps track of its success status
@@ -180,20 +176,14 @@ class IidsTrainable(tune.Trainable):
 
         # Write config files
         with self._open_file(self.config_iids, "wt") as f:
-            f.write(
-                orjson.dumps(config["iids"], option=orjson.OPT_INDENT_2).decode("utf-8")
-            )
+            f.write(json.dumps(config["iids"]))
         with self._open_file(self.config_combiner, "wt") as f:
-            f.write(
-                orjson.dumps(config["combiner"], option=orjson.OPT_INDENT_2).decode(
-                    "utf-8"
-                )
-            )
+            f.write(json.dumps(config["combiner"]))
 
         # Initiate status
         if os.path.exists(self.status_file):
             with self._open_file(self.status_file, "rb") as f:
-                self.status = orjson.loads(f.read())
+                self.status = json.loads(f.read())
             self.status = {k: RunStatus(v) for k, v in self.status.items()}
         else:
             self.status = {
@@ -209,7 +199,7 @@ class IidsTrainable(tune.Trainable):
         # Initiate runtime
         if os.path.exists(self.runtime_file):
             with self._open_file(self.runtime_file, "rb") as f:
-                self.runtime = orjson.loads(f.read())
+                self.runtime = json.loads(f.read())
         else:
             self.runtime = {
                 "train": 0,
@@ -228,7 +218,7 @@ class IidsTrainable(tune.Trainable):
 
         # Read results from file
         with self._open_file(self.evaluate_file, "rb") as f:
-            return orjson.loads(f.read())
+            return json.loads(f.read())
 
     def cleanup(self):
         self._save_status()

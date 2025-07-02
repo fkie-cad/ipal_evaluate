@@ -1,3 +1,5 @@
+import numpy as np
+
 import evaluate.settings as settings
 
 from .metric import Metric
@@ -145,7 +147,7 @@ class PenaltyScore(Metric):
 class DetectionDelay(Metric):
     _name = "Detection-Delay"
     _description = "The detection delay aggregates the time intervals between the start of an attack and the time of the first detection."
-    _requires = []
+    _requires = ["Detected-Scenarios"]
     _requires_timed_dataset = True
     _requires_attacks = True
     _higher_is_better = False
@@ -194,3 +196,44 @@ class DetectionDelay(Metric):
             prev = d["timestamp"]
 
         return {cls._name: dd}
+
+
+class AverageTimeToDetection(Metric):
+    _name = "Average-Time-to-Detection"
+    _description = "Average time to detection (TTD) measures the average time between the start of an attack and the begining of the alert."
+    _requires = ["Detected-Scenarios"]
+    _requires_timed_dataset = True
+    _requires_attacks = True
+    _higher_is_better = False
+
+    @classmethod
+    def calculate(
+        cls,
+        truth=None,
+        predicted=None,
+        dataset=None,
+        attacks=None,
+        ergs=None,
+    ):
+        assert dataset is not None and attacks is not None and ergs is not None
+
+        # Filter attacks once before iterating over dataset
+        detected_scenarios = set(ergs["Detected-Scenarios"])
+        active_attacks = [
+            attack for attack in attacks if attack["id"] in detected_scenarios
+        ]
+        delay = {attack["id"]: np.inf for attack in active_attacks}
+
+        for d in dataset:
+            if d["ids"]:  # ids alert
+                for attack in active_attacks:  # for (remaining) attack
+                    if (
+                        attack["start"]
+                        <= d["timestamp"]
+                        <= attack["end"] + settings.alarm_gracetime
+                    ):
+                        delay[attack["id"]] = min(
+                            delay[attack["id"]], d["timestamp"] - attack["start"]
+                        )
+
+        return {cls._name: np.mean(list(delay.values()))}

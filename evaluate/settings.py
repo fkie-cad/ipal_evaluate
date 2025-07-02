@@ -1,7 +1,7 @@
 import logging
 from typing import IO
 
-version = "v1.3.1"
+version = "v1.3.2"
 
 # Gzip options
 compresslevel = 6  # 0 no compress, 1 large/fast, 9 small/slow

@@ -18,6 +18,7 @@ from .jaccard import JaccardDistance, JaccardIndex
 from .matthews_corr_coeff import MCC
 from .nab_score import Nab
 from .scenarios import (
+    AverageTimeToDetection,
     DetectedScenarios,
     DetectedScenariosPercent,
     DetectionDelay,
@@ -49,6 +50,7 @@ metrics = [
     ScenarioRecall,
     PenaltyScore,
     DetectionDelay,
+    AverageTimeToDetection,
     TruePositiveAlarms,
     FalsePositiveAlarms,
     # Time-Aware metrics
