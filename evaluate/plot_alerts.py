@@ -99,8 +99,9 @@ def plot(  # noqa: C901
     count = 1
     ipalidtotimestamp = {}
 
-    with open_file(ATTACKFILE, "rb") as f:
-        attacks = orjson.loads(f.read())
+    if ATTACKFILE is not None:
+        with open_file(ATTACKFILE, "rb") as f:
+            attacks = orjson.loads(f.read())
 
     START = None
     END = None
